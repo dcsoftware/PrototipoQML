@@ -24,6 +24,32 @@ void Encoder::setupI2C()
     i2c_slave = wiringPiI2CSetup(SLAVE_ADDRESS);
 }
 
+void Encoder::getMotorStatus()
+{
+    qDebug() << "Setting Active motor - DITO";
+
+    wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, DITO);
+    QThread::msleep(5);
+    int ditoStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
+    QThread::msleep(5);
+
+    qDebug() << "Setting Active motor  - LUNETTA";
+
+    wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, LUNETTA);
+    QThread::msleep(5);
+    int lunettaStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
+    QThread::msleep(5);
+
+    qDebug() << "Setting Active motor  - NASTRO";
+
+    wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, NASTRO);
+    QThread::msleep(5);
+    int nastroStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
+    QThread::msleep(5);
+
+    emit closePopup();
+}
+
 void Encoder::startTimer()
 {
     encTimer->start(100);

@@ -23,7 +23,9 @@ Window {
         width: 400
         height: 200
         modal: true
+        dim: true
         open: true
+        onAboutToShow: encoder.getMotorStatus()
 
         BusyIndicator {
             id: busyIndicator1
@@ -32,7 +34,7 @@ Window {
             y: Math.round((parent.height - height) / 2)
             focusPolicy: Qt.StrongFocus
             antialiasing: true
-            running: Image.Loading
+            running: true
         }
     }
 
@@ -42,6 +44,7 @@ Window {
         id: encoder
 
         onUpdateEncoder: encoderText.text = qsTr("GRADI ENCODER: " + degrees)
+        onClosePopup: popup.close()
     }
 
     I2CCom {
@@ -92,7 +95,8 @@ Window {
         y: 40
         width: 235
         height: 40
-        //text: "GRADI ENCODER: " + encoder.message
+        text: "GRADI ENCODER: "
+        enabled: false
     }
 
     Button {
@@ -128,6 +132,7 @@ Window {
         display: AbstractButton.IconOnly
         hoverEnabled: false
         enabled: false
+
     }
 
     Label {
@@ -253,6 +258,20 @@ Window {
             y: 229
         }
 
+    }
+
+    Button {
+        id: manualButton
+        x: 660
+        y: 163
+        text: qsTr("MANUALE")
+    }
+
+    Button {
+        id: fasiButton
+        x: 660
+        y: 241
+        text: qsTr("FASI")
     }
 
 }
