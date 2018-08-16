@@ -29,23 +29,51 @@ void Encoder::getMotorStatus()
     qDebug() << "Setting Active motor - DITO";
 
     wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, DITO);
-    QThread::msleep(5);
-    int ditoStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
-    QThread::msleep(5);
+    QThread::msleep(100);
+    int ditoStatus = wiringPiI2CReadReg8(i2c_slave, GET_STATUS);
+    QThread::msleep(100);
 
+    qDebug() << "DITO Status: " << ditoStatus;
+    qDebug() << "Setting Active motor  - CORPO";
+
+    wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, CORPO);
+    QThread::msleep(100);
+    int corpoStatus = wiringPiI2CReadReg8(i2c_slave, GET_STATUS);
+    QThread::msleep(100);
+
+    qDebug() << "CORPO Status: " << corpoStatus;
+    qDebug() << "Setting Active motor  - MANINE";
+
+    wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, MANINE);
+    QThread::msleep(100);
+    int manineStatus = wiringPiI2CReadReg8(i2c_slave, GET_STATUS);
+    QThread::msleep(100);
+
+    qDebug() << "MANINE Status: " << manineStatus;
+    qDebug() << "Setting Active motor  - CHIUSURA";
+
+    wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, CHIUSURA);
+    QThread::msleep(100);
+    int chiusuraStatus = wiringPiI2CReadReg8(i2c_slave, GET_STATUS);
+    QThread::msleep(100);
+
+    qDebug() << "CHIUSURA Status: " << chiusuraStatus;
     qDebug() << "Setting Active motor  - LUNETTA";
 
     wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, LUNETTA);
-    QThread::msleep(5);
-    int lunettaStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
-    QThread::msleep(5);
+    QThread::msleep(100);
+    int lunettaStatus = wiringPiI2CReadReg8(i2c_slave, GET_STATUS);
+    QThread::msleep(100);
 
+    qDebug() << "LUNETTA Status: " << lunettaStatus;
     qDebug() << "Setting Active motor  - NASTRO";
 
     wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, NASTRO);
-    QThread::msleep(5);
-    int nastroStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
-    QThread::msleep(5);
+    QThread::msleep(100);
+    int nastroStatus = wiringPiI2CReadReg8(i2c_slave, GET_STATUS);
+    QThread::msleep(100);
+
+    qDebug() << "NASTRO Status: " << nastroStatus;
 
     emit closePopup();
 }

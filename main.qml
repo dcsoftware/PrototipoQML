@@ -14,25 +14,22 @@ Window {
     title: qsTr("Hello World")
 
 
-
     Popup {
         id: popup
-        //parent: Overlay.overlay
         x: Math.round((parent.width - width) / 2)
         y: Math.round((parent.height - height) / 2)
         width: 400
         height: 200
         modal: true
-        dim: true
-        open: true
+        focus: true
+        closePolicy: "NoAutoClose"
         onAboutToShow: encoder.getMotorStatus()
 
         BusyIndicator {
-            id: busyIndicator1
+            id: busyIndicator
             parent: popup
             x: Math.round((parent.width - width) / 2)
             y: Math.round((parent.height - height) / 2)
-            focusPolicy: Qt.StrongFocus
             antialiasing: true
             running: true
         }
@@ -44,7 +41,10 @@ Window {
         id: encoder
 
         onUpdateEncoder: encoderText.text = qsTr("GRADI ENCODER: " + degrees)
-        onClosePopup: popup.close()
+        onClosePopup: {
+            console.log("PopUp close signal")
+            popup.close()
+        }
     }
 
     I2CCom {
@@ -244,27 +244,12 @@ Window {
         font.pointSize: 13
     }
 
-    Dialog {
-        id: startProgressDialog
-        visible: false
-        width: 400
-        height: 200
-        x: 200
-        y: 140
-
-        BusyIndicator {
-            id: busyIndicator
-            x: 192
-            y: 229
-        }
-
-    }
-
     Button {
         id: manualButton
         x: 660
         y: 163
         text: qsTr("MANUALE")
+        onClicked: popup.open()
     }
 
     Button {
