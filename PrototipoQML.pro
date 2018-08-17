@@ -41,3 +41,5 @@ HEADERS += \
     powerstepregisters.h \
     i2ccommands.h \
     encoder.h
+
+DISTFILES +=

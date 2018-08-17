@@ -75,6 +75,10 @@ void Encoder::getMotorStatus()
 
     qDebug() << "NASTRO Status: " << nastroStatus;
 
+    QThread::msleep(2000);
+
+
+
     emit closePopup();
 }
 

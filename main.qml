@@ -1,8 +1,7 @@
 import QtQuick 2.11
 import QtQuick.Window 2.11
 import QtQuick.VirtualKeyboard 2.3
-import QtQuick.Controls 2.2
-import QtQuick.Dialogs 1.2
+import QtQuick.Controls 2.4
 import Encoder 1.0
 import I2CCom 1.0
 
@@ -11,10 +10,55 @@ Window {
     visible: true
     width: 800
     height: 480
-    title: qsTr("Hello World")
+
+    Component.onCompleted: motorStatusDialog.open()
+
+    property variant motorConfigWin;
+
+    Dialog{
+        id: motorStatusDialog
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        width: 400
+        height: 300
+        parent: Overlay.overlay
+        modal: Qt.ApplicationModal
+        focus: true
+        //closePolicy: "CloseOnEscape"
+        //Component.onCompleted: encoder.getMotorStatus()
+        //onOpened: encoder.getMotorStatus()
+        //onFocusChanged: encoder.getMotorStatus()
+        //onAccepted: motorStatusDialog.close()
+        onVisibleChanged: {
+            if(visible){
+                encoder.getMotorStatus()
+            }
+        }
+
+        BusyIndicator {
+            id: busyIndicator
+            x: (parent.width - width) / 2
+            y: 20
+
+            width: 50
+            height: 50
+            running: true
+            //onRunningChanged: encoder.getMotorStatus()
+
+        }
+
+        Button {
+            id: doneButton
+            text: "DONE"
+            enabled: false
+            onClicked: motorStatusDialog.close()
+        }
+
+    }
 
 
-    Popup {
+
+    /*Popup {
         id: popup
         x: Math.round((parent.width - width) / 2)
         y: Math.round((parent.height - height) / 2)
@@ -33,9 +77,7 @@ Window {
             antialiasing: true
             running: true
         }
-    }
-
-
+    }*/
 
     Encoder {
         id: encoder
@@ -43,7 +85,9 @@ Window {
         onUpdateEncoder: encoderText.text = qsTr("GRADI ENCODER: " + degrees)
         onClosePopup: {
             console.log("PopUp close signal")
-            popup.close()
+            //motorStatusDialog.done(Dialog.Accepted)
+            ditoSButton.palette.button = "green"
+            doneButton.enabled = true
         }
     }
 
@@ -132,7 +176,7 @@ Window {
         display: AbstractButton.IconOnly
         hoverEnabled: false
         enabled: false
-
+        palette.button: "red"
     }
 
     Label {
@@ -249,7 +293,13 @@ Window {
         x: 660
         y: 163
         text: qsTr("MANUALE")
-        onClicked: popup.open()
+        onClicked: motorStatusDialog.open()
+
+        /*{
+            var component = Qt.createComponent("MotorConfigWindow.qml");
+            motorConfigWin = component.createObject(mainWindow);
+            motorConfigWin.show();
+        }*/
     }
 
     Button {
