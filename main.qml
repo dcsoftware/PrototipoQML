@@ -252,13 +252,12 @@ Window {
         x: 660
         y: 163
         text: qsTr("MANUALE")
-        onClicked: motorStatusDialog.open()
-
-        /*{
+        onClicked:
+        {
             var component = Qt.createComponent("MotorConfigWindow.qml");
             motorConfigWindow = component.createObject(mainWindow);
             motorConfigWindow.show();
-        }*/
+        }
     }
 
     Button {
@@ -266,12 +265,12 @@ Window {
         x: 660
         y: 241
         text: qsTr("FASI")
-        //onClicked:
-        /*{
+        onClicked:
+        {
             var component = Qt.createComponent("PhaseConfigWindow.qml");
             phaseConfigWindow = component.createObject(mainWindow);
             phaseConfigWindow.show();
-        }*/
+        }
     }
 
 }
