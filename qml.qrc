@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>MotorConfigWindow.qml</file>
+        <file>PhaseConfigWindow.qml</file>
     </qresource>
 </RCC>

@@ -25,6 +25,7 @@ public slots:
 signals:
     void updateEncoder(int degrees);
     void closePopup();
+    void updateMotorStatus(int motor, bool status);
 };
 
 #endif // ENCODER_H

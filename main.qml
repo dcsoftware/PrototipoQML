@@ -11,14 +11,37 @@ Window {
     width: 800
     height: 480
 
-    property variant motorConfigWin;
+    property variant motorConfigWindow;
+    property variant phaseConfigWindow
 
     Encoder {
         id: encoder
 
         onUpdateEncoder: encoderText.text = qsTr("GRADI ENCODER: " + degrees)
         onClosePopup: {
-            ditoSButton.palette.button = "green"
+            //ditoSButton.palette.button = "green"
+        }
+        onUpdateMotorStatus: {
+            switch(motor){
+            case 0x01:
+                status ? ditoSButton.palette.button = "green" : ditoSButton.palette.button = "red"
+                break;
+            case 0x02:
+                status ? corpoSButton.palette.button = "green" : corpoSButton.palette.button = "red"
+                break;
+            case 0x03:
+                status ? manineSButton.palette.button = "green" : manineSButton.palette.button = "red"
+                break;
+            case 0x04:
+                status ? chiusuraSButton.palette.button = "green" : chiusuraSButton.palette.button = "red"
+                break;
+            case 0x05:
+                status ? lunettaSButton.palette.button = "green" : lunettaSButton.palette.button = "red"
+                break;
+            case 0x06:
+                status ? nastroSButton.palette.button = "green" : nastroSButton.palette.button = "red"
+                break;
+            }
         }
     }
 
@@ -107,7 +130,7 @@ Window {
         display: AbstractButton.IconOnly
         hoverEnabled: false
         enabled: false
-        palette.button: "red"
+        palette.button: "yellow"
     }
 
     Label {
@@ -129,6 +152,7 @@ Window {
         antialiasing: true
         hoverEnabled: false
         enabled: false
+        palette.button: "yellow"
     }
 
     RoundButton {
@@ -139,6 +163,7 @@ Window {
         antialiasing: true
         hoverEnabled: false
         enabled: false
+        palette.button: "yellow"
     }
 
     RoundButton {
@@ -149,6 +174,7 @@ Window {
         antialiasing: true
         hoverEnabled: false
         enabled: false
+        palette.button: "yellow"
     }
 
     RoundButton {
@@ -159,6 +185,7 @@ Window {
         antialiasing: true
         hoverEnabled: false
         enabled: false
+        palette.button: "yellow"
     }
 
     RoundButton {
@@ -169,6 +196,7 @@ Window {
         antialiasing: true
         hoverEnabled: false
         enabled: false
+        palette.button: "yellow"
     }
 
     Label {
@@ -228,8 +256,8 @@ Window {
 
         /*{
             var component = Qt.createComponent("MotorConfigWindow.qml");
-            motorConfigWin = component.createObject(mainWindow);
-            motorConfigWin.show();
+            motorConfigWindow = component.createObject(mainWindow);
+            motorConfigWindow.show();
         }*/
     }
 
@@ -238,6 +266,12 @@ Window {
         x: 660
         y: 241
         text: qsTr("FASI")
+        //onClicked:
+        /*{
+            var component = Qt.createComponent("PhaseConfigWindow.qml");
+            phaseConfigWindow = component.createObject(mainWindow);
+            phaseConfigWindow.show();
+        }*/
     }
 
 }
