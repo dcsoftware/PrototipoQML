@@ -6,6 +6,8 @@ import QtQuick.Controls.Material 2.4
 import Encoder 1.0
 import I2CCom 1.0
 
+
+
 Window {
     id: mainWindow
     visible: true
@@ -45,7 +47,53 @@ Window {
 
     I2CCom {
         id: i2ccom
+        onUpdateStatus: {
+            switch(motor){
+            case 0x00:
+                status ? ditoSButton.palette.button = "green" : ditoSButton.palette.button = "red"
+                break;
+            case 0x01:
+                status ? corpoSButton.palette.button = "green" : corpoSButton.palette.button = "red"
+                break;
+            case 0x02:
+                status ? manineSButton.palette.button = "green" : manineSButton.palette.button = "red"
+                break;
+            case 0x03:
+                status ? chiusuraSButton.palette.button = "green" : chiusuraSButton.palette.button = "red"
+                break;
+            case 0x04:
+                status ? lunettaSButton.palette.button = "green" : lunettaSButton.palette.button = "red"
+                break;
+            case 0x05:
+                status ? nastroSButton.palette.button = "green" : nastroSButton.palette.button = "red"
+                break;
+            }
+        }
+
+        onUpdatePosition: {
+            switch(motor){
+                 case 0x00:
+                    ditoPosLabel.text = "STEPS: " + position
+                    break;
+                 case 0x01:
+                    corpoPosLabel.text = "STEPS: " + position
+                    break;
+                 case 0x02:
+                    maninePosLabel.text = "STEPS: " + position
+                    break;
+                 case 0x03:
+                    chiusuraPosLabel.text = "STEPS: " + position
+                    break;
+                 case 0x04:
+                    lunettaPosLabel.text = "STEPS: " + position
+                    break;
+                 case 0x05:
+                    nastroPosLabel.text = "STEPS: " + position
+                    break;
+                 }
+             }
     }
+
 
     InputPanel {
         id: inputPanel
@@ -84,6 +132,7 @@ Window {
         Pane {
             id: mainPane
             anchors.fill: parent
+            Component.onCompleted: i2ccom.getAllStatus()
 
             Button {
                 id: quitButton
@@ -159,6 +208,7 @@ Window {
                 hoverEnabled: false
                 enabled: false
                 //palette.button: "yellow"
+
             }
 
             RoundButton {
@@ -275,6 +325,7 @@ Window {
             id: motorConfigPane
             anchors.fill: parent
             visible: false
+
         }
 
         Pane {
@@ -287,6 +338,7 @@ Window {
             id: manualPane
             anchors.fill: parent
             visible: false
+            Component.onCompleted: i2ccom.getAllPosition()
 
             TextField {
                 id: encoderText2
@@ -647,7 +699,4 @@ Window {
             }
         }
     }
-
-
-
 }

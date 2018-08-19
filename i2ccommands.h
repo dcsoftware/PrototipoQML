@@ -17,12 +17,12 @@
 #define I2C_GET_STATUS    0x0D
 #define I2C_SET_MOTOR     0x1F
 
-#define DITO                0x01
-#define CORPO               0x02
-#define MANINE              0x03
-#define CHIUSURA            0x04
-#define LUNETTA             0x05
-#define NASTRO              0x06
+#define DITO                0x00
+#define CORPO               0x01
+#define MANINE              0x02
+#define CHIUSURA            0x03
+#define LUNETTA             0x04
+#define NASTRO              0x05
 
 
 #endif // I2CCOMMANDS_H
