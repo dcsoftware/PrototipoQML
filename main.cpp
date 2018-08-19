@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     qmlRegisterType<Encoder>("Encoder", 1, 0, "Encoder");
+
     qmlRegisterType<I2CCom>("I2CCom", 1, 0, "I2CCom");
 
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

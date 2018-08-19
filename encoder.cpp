@@ -30,11 +30,9 @@ void Encoder::getMotorStatus()
 
     wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, DITO);
     QThread::msleep(100);
-    int ditoStatus = wiringPiI2CReadReg8(i2c_slave, GET_STATUS);
-    if(ditoStatus != 0x00)
-        emit updateMotorStatus(DITO, true);
-    else
-        emit updateMotorStatus(DITO, false);
+    int ditoStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
+
+    emit updateMotorStatus(DITO, (ditoStatus != 0x00)? true : false);
 
     QThread::msleep(100);
 
@@ -43,11 +41,10 @@ void Encoder::getMotorStatus()
 
     wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, CORPO);
     QThread::msleep(100);
-    int corpoStatus = wiringPiI2CReadReg8(i2c_slave, GET_STATUS);
-    if(corpoStatus != 0x00)
-        emit updateMotorStatus(CORPO, true);
-    else
-        emit updateMotorStatus(CORPO, false);
+    int corpoStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
+
+    emit updateMotorStatus(DITO, (corpoStatus != 0x00)? true : false);
+
 
     QThread::msleep(100);
 
@@ -56,7 +53,7 @@ void Encoder::getMotorStatus()
 
     wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, MANINE);
     QThread::msleep(100);
-    int manineStatus = wiringPiI2CReadReg8(i2c_slave, GET_STATUS);
+    int manineStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
     if(manineStatus != 0x00)
         emit updateMotorStatus(MANINE, true);
     else
@@ -69,7 +66,7 @@ void Encoder::getMotorStatus()
 
     wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, CHIUSURA);
     QThread::msleep(100);
-    int chiusuraStatus = wiringPiI2CReadReg8(i2c_slave, GET_STATUS);
+    int chiusuraStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
     if(chiusuraStatus != 0x00)
         emit updateMotorStatus(CHIUSURA, true);
     else
@@ -82,7 +79,7 @@ void Encoder::getMotorStatus()
 
     wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, LUNETTA);
     QThread::msleep(100);
-    int lunettaStatus = wiringPiI2CReadReg8(i2c_slave, GET_STATUS);
+    int lunettaStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
     if(lunettaStatus != 0x00)
         emit updateMotorStatus(LUNETTA, true);
     else
@@ -95,7 +92,7 @@ void Encoder::getMotorStatus()
 
     wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, NASTRO);
     QThread::msleep(100);
-    int nastroStatus = wiringPiI2CReadReg8(i2c_slave, GET_STATUS);
+    int nastroStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
     if(nastroStatus != 0x00)
         emit updateMotorStatus(NASTRO, true);
     else

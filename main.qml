@@ -2,6 +2,7 @@ import QtQuick 2.11
 import QtQuick.Window 2.11
 import QtQuick.VirtualKeyboard 2.3
 import QtQuick.Controls 2.4
+import QtQuick.Controls.Material 2.4
 import Encoder 1.0
 import I2CCom 1.0
 
@@ -10,9 +11,6 @@ Window {
     visible: true
     width: 800
     height: 480
-
-    property variant motorConfigWindow;
-    property variant phaseConfigWindow
 
     Encoder {
         id: encoder
@@ -79,198 +77,577 @@ Window {
         }
     }
 
-    Button {
-        id: quitButton
-        x: 660
-        y: 400
-        text: qsTr("QUIT")
-        onClicked: close();
-    }
+    Flickable {
+        id: flickable
+        anchors.fill: parent
 
-    TextField {
-        id: encoderText
-        x: 525
-        y: 40
-        width: 235
-        height: 40
-        text: "GRADI ENCODER: "
-        enabled: false
-    }
+        Pane {
+            id: mainPane
+            anchors.fill: parent
 
-    Button {
-        id: startEncButton
-        x: 40
-        y: 40
-        text: qsTr("START")
-        onClicked: encoder.startTimer();
-    }
+            Button {
+                id: quitButton
+                x: 648
+                y: 388
+                text: qsTr("QUIT")
+                onClicked: close();
+            }
 
-    Button {
-        id: stopEncButton
-        x: 250
-        y: 40
-        text: qsTr("STOP")
-        onClicked: encoder.stopTimer();
-    }
+            TextField {
+                id: encoderText
+                x: 513
+                y: 28
+                width: 235
+                height: 40
+                text: "GRADI ENCODER: "
+                enabled: false
+            }
 
-    Button {
-        id: resetEncButton
-        x: 660
-        y: 330
-        text: qsTr("RESET")
-        onClicked: encoder.resetTimer();
-    }
+            Button {
+                id: startEncButton
+                x: 28
+                y: 28
+                text: qsTr("START")
+                onClicked: encoder.startTimer();
+            }
 
-    RoundButton {
-        id: ditoSButton
-        x: 70
-        y: 320
-        text: ""
-        antialiasing: true
-        display: AbstractButton.IconOnly
-        hoverEnabled: false
-        enabled: false
-        palette.button: "yellow"
-    }
+            Button {
+                id: stopEncButton
+                x: 238
+                y: 28
+                text: qsTr("STOP")
+                onClicked: encoder.stopTimer();
+            }
 
-    Label {
-        id: label
-        x: 70
-        y: 385
-        width: 40
-        text: qsTr("DITO")
-        font.pointSize: 13
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-    }
+            Button {
+                id: resetEncButton
+                x: 648
+                y: 318
+                text: qsTr("RESET")
+                onClicked: encoder.resetTimer();
+            }
 
-    RoundButton {
-        id: lunettaSButton
-        x: 150
-        y: 320
-        text: ""
-        antialiasing: true
-        hoverEnabled: false
-        enabled: false
-        palette.button: "yellow"
-    }
+            RoundButton {
+                id: ditoSButton
+                x: 58
+                y: 308
+                text: ""
+                antialiasing: true
+                display: AbstractButton.IconOnly
+                hoverEnabled: false
+                enabled: false
+                //palette.button: "yellow"
+            }
 
-    RoundButton {
-        id: nastroSButton
-        x: 230
-        y: 320
-        text: ""
-        antialiasing: true
-        hoverEnabled: false
-        enabled: false
-        palette.button: "yellow"
-    }
+            Label {
+                id: label
+                x: 58
+                y: 373
+                width: 40
+                text: qsTr("DITO")
+                font.pointSize: 13
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
 
-    RoundButton {
-        id: corpoSButton
-        x: 310
-        y: 320
-        text: ""
-        antialiasing: true
-        hoverEnabled: false
-        enabled: false
-        palette.button: "yellow"
-    }
+            RoundButton {
+                id: lunettaSButton
+                x: 138
+                y: 308
+                text: ""
+                antialiasing: true
+                hoverEnabled: false
+                enabled: false
+                //palette.button: "yellow"
+            }
 
-    RoundButton {
-        id: manineSButton
-        x: 390
-        y: 320
-        text: ""
-        antialiasing: true
-        hoverEnabled: false
-        enabled: false
-        palette.button: "yellow"
-    }
+            RoundButton {
+                id: nastroSButton
+                x: 218
+                y: 308
+                text: ""
+                antialiasing: true
+                hoverEnabled: false
+                enabled: false
+                //palette.button: "yellow"
+            }
 
-    RoundButton {
-        id: chiusuraSButton
-        x: 470
-        y: 320
-        text: ""
-        antialiasing: true
-        hoverEnabled: false
-        enabled: false
-        palette.button: "yellow"
-    }
+            RoundButton {
+                id: corpoSButton
+                x: 298
+                y: 308
+                text: ""
+                antialiasing: true
+                hoverEnabled: false
+                enabled: false
+                //palette.button: "yellow"
+            }
 
-    Label {
-        id: label1
-        x: 133
-        y: 385
-        text: qsTr("LUNETTA")
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
-        font.pointSize: 13
-    }
+            RoundButton {
+                id: manineSButton
+                x: 378
+                y: 308
+                text: ""
+                antialiasing: true
+                hoverEnabled: false
+                enabled: false
+                //palette.button: "yellow"
+            }
 
-    Label {
-        id: label2
-        x: 217
-        y: 385
-        text: qsTr("NASTRO")
-        font.pointSize: 13
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
-    }
+            RoundButton {
+                id: chiusuraSButton
+                x: 458
+                y: 308
+                text: ""
+                antialiasing: true
+                hoverEnabled: false
+                enabled: false
+                //palette.button: "yellow"
+            }
 
-    Label {
-        id: label3
-        x: 301
-        y: 385
-        text: qsTr("CORPO")
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
-        font.pointSize: 13
-    }
+            Label {
+                id: label1
+                x: 121
+                y: 373
+                text: qsTr("LUNETTA")
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                font.pointSize: 13
+            }
 
-    Label {
-        id: label4
-        x: 377
-        y: 385
-        text: qsTr("MANINE")
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
-        font.pointSize: 13
-    }
+            Label {
+                id: label2
+                x: 205
+                y: 373
+                text: qsTr("NASTRO")
+                font.pointSize: 13
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+            }
 
-    Label {
-        id: label5
-        x: 449
-        y: 385
-        text: qsTr("CHIUSURA")
-        font.pointSize: 13
-    }
+            Label {
+                id: label3
+                x: 289
+                y: 373
+                text: qsTr("CORPO")
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                font.pointSize: 13
+            }
 
-    Button {
-        id: manualButton
-        x: 660
-        y: 163
-        text: qsTr("MANUALE")
-        onClicked:
-        {
-            var component = Qt.createComponent("MotorConfigWindow.qml");
-            motorConfigWindow = component.createObject(mainWindow);
-            motorConfigWindow.show();
+            Label {
+                id: label4
+                x: 365
+                y: 373
+                text: qsTr("MANINE")
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                font.pointSize: 13
+            }
+
+            Label {
+                id: label5
+                x: 437
+                y: 373
+                text: qsTr("CHIUSURA")
+                font.pointSize: 13
+            }
+
+            Button {
+                id: manualButton
+                x: 648
+                y: 151
+                text: qsTr("MANUALE")
+                onClicked: manualPane.visible = true
+
+            }
+
+            Button {
+                id: fasiButton
+                x: 648
+                y: 229
+                text: qsTr("FASI")
+
+            }
+        }
+
+        Pane {
+            id: motorConfigPane
+            anchors.fill: parent
+            visible: false
+        }
+
+        Pane {
+            id: phasesConfigPane
+            anchors.fill: parent
+            visible: false
+        }
+
+        Pane {
+            id: manualPane
+            anchors.fill: parent
+            visible: false
+
+            TextField {
+                id: encoderText2
+                x: 300
+                y: 28
+                text: qsTr("Text Field")
+                font.pointSize: 16
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            Row {
+                id: row
+                x: 50
+                y: 120
+                width: 700
+                height: 60
+                spacing: 2
+
+                Label {
+                    id: ditoLabel
+                    x: 0
+                    y: 13
+                    height: 30
+                    text: qsTr("DITO")
+                    anchors.verticalCenter: parent.verticalCenter
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                    font.pointSize: 16
+                }
+
+                Button {
+                    id: ditoPos1Button
+                    x: 200
+                    y: 2
+                    width: 80
+                    height: 30
+                    text: qsTr("POS 1")
+                    highlighted: false
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 320
+                }
+
+                Button {
+                    id: ditoPos2Button
+                    y: 2
+                    width: 80
+                    height: 30
+                    text: qsTr("POS 2")
+                    anchors.left: ditoPos1Button.right
+                    anchors.leftMargin: 40
+                    anchors.verticalCenter: parent.verticalCenter
+                    transformOrigin: Item.Center
+                }
+
+                Label {
+                    id: ditoPosLabel
+                    width: 150
+                    height: 30
+                    text: qsTr("Posizione:")
+                    anchors.left: ditoPos2Button.right
+                    anchors.leftMargin: 40
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.pointSize: 14
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignLeft
+                }
+            }
+
+            Row {
+                id: row1
+                x: 50
+                y: 180
+                width: 700
+                height: 60
+                Label {
+                    id: corpoLabel
+                    x: 0
+                    y: 13
+                    height: 30
+                    text: qsTr("COPRO MANINE")
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.pointSize: 16
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                Button {
+                    id: corpoPos1Button
+                    x: 200
+                    y: 2
+                    width: 80
+                    height: 30
+                    text: qsTr("POS 1")
+                    anchors.verticalCenter: parent.verticalCenter
+                    transformOrigin: Item.Center
+                    anchors.rightMargin: 320
+                    anchors.right: parent.right
+                }
+
+                Button {
+                    id: corpoPos2Button
+                    y: 2
+                    width: 80
+                    height: 30
+                    text: qsTr("POS 2")
+                    anchors.left: corpoPos1Button.right
+                    anchors.leftMargin: 40
+                    anchors.verticalCenter: parent.verticalCenter
+                    transformOrigin: Item.Center
+                }
+
+                Label {
+                    id: corpoPosLabel
+                    width: 150
+                    height: 30
+                    text: qsTr("Posizione:")
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: corpoPos2Button.right
+                    font.pointSize: 14
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignLeft
+                    anchors.leftMargin: 40
+                }
+                spacing: 2
+            }
+
+            Row {
+                id: row2
+                x: 50
+                y: 240
+                width: 700
+                height: 60
+                Label {
+                    id: manineLabel
+                    x: 0
+                    y: 13
+                    height: 30
+                    text: qsTr("MANINE")
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.pointSize: 16
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                Button {
+                    id: maninePos1Button
+                    x: 200
+                    y: 2
+                    width: 80
+                    height: 30
+                    text: qsTr("POS 1")
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.rightMargin: 320
+                    transformOrigin: Item.Center
+                    anchors.right: parent.right
+                }
+
+                Button {
+                    id: maninePos2Button
+                    y: 2
+                    width: 80
+                    height: 30
+                    text: qsTr("POS 2")
+                    anchors.left: maninePos1Button.right
+                    anchors.leftMargin: 40
+                    anchors.verticalCenter: parent.verticalCenter
+                    transformOrigin: Item.Center
+                }
+
+                Label {
+                    id: maninePosLabel
+                    width: 150
+                    height: 30
+                    text: qsTr("Posizione:")
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: maninePos2Button.right
+                    font.pointSize: 14
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignLeft
+                    anchors.leftMargin: 40
+                }
+                spacing: 2
+            }
+
+            Row {
+                id: row3
+                x: 50
+                y: 300
+                width: 700
+                height: 60
+                Label {
+                    id: chiusuraLabel
+                    x: 0
+                    y: 13
+                    height: 30
+                    text: qsTr("CHIUSURA MANINE")
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.pointSize: 16
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                Button {
+                    id: chiusuraPos1Button
+                    x: 200
+                    y: 2
+                    width: 80
+                    height: 30
+                    text: qsTr("POS 1")
+                    anchors.verticalCenter: parent.verticalCenter
+                    transformOrigin: Item.Center
+                    anchors.rightMargin: 320
+                    anchors.right: parent.right
+                }
+
+                Button {
+                    id: chiusuraPos2Button
+                    y: 2
+                    width: 80
+                    height: 30
+                    text: qsTr("POS 2")
+                    anchors.left: chiusuraPos1Button.right
+                    anchors.leftMargin: 40
+                    anchors.verticalCenter: parent.verticalCenter
+                    transformOrigin: Item.Center
+                }
+
+                Label {
+                    id: chiusuraPosLabel
+                    width: 150
+                    height: 30
+                    text: qsTr("Posizione:")
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: chiusuraPos2Button.right
+                    font.pointSize: 14
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignLeft
+                    anchors.leftMargin: 40
+                }
+                spacing: 2
+            }
+
+            Row {
+                id: row4
+                x: 50
+                y: 360
+                width: 700
+                height: 60
+                Label {
+                    id: lunettaLabel
+                    x: 0
+                    y: 13
+                    height: 30
+                    text: qsTr("LUNETTA")
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.pointSize: 16
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                Button {
+                    id: lunettaPos1Button
+                    x: 200
+                    y: 2
+                    width: 80
+                    height: 30
+                    text: qsTr("POS 1")
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.rightMargin: 320
+                    transformOrigin: Item.Center
+                    anchors.right: parent.right
+                }
+
+                Button {
+                    id: lunettaPos2Button
+                    y: 2
+                    width: 80
+                    height: 30
+                    text: qsTr("POS 2")
+                    anchors.left: lunettaPos1Button.right
+                    anchors.leftMargin: 40
+                    anchors.verticalCenter: parent.verticalCenter
+                    transformOrigin: Item.Center
+                }
+
+                Label {
+                    id: lunettaPosLabel
+                    width: 150
+                    height: 30
+                    text: qsTr("Posizione:")
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: lunettaPos2Button.right
+                    font.pointSize: 14
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignLeft
+                    anchors.leftMargin: 40
+                }
+                spacing: 2
+            }
+
+            Row {
+                id: row5
+                x: 50
+                y: 420
+                width: 700
+                height: 60
+                Label {
+                    id: nastroLabel
+                    x: 0
+                    y: 13
+                    height: 30
+                    text: qsTr("NASTRO")
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.pointSize: 16
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                Button {
+                    id: nastroPos1Button1
+                    x: 200
+                    y: 2
+                    width: 80
+                    height: 30
+                    text: qsTr("PASSO")
+                    anchors.verticalCenter: parent.verticalCenter
+                    transformOrigin: Item.Center
+                    anchors.rightMargin: 320
+                    anchors.right: parent.right
+                }
+
+                Button {
+                    id: lunettaPos2Button1
+                    y: 2
+                    width: 80
+                    height: 30
+                    text: qsTr("AVANZ")
+                    anchors.left: nastroPos1Button1.right
+                    anchors.leftMargin: 40
+                    anchors.verticalCenter: parent.verticalCenter
+                    transformOrigin: Item.Center
+                }
+
+                Label {
+                    id: nastroPosLabel
+                    width: 150
+                    height: 30
+                    text: qsTr("Posizione:")
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: lunettaPos2Button1.right
+                    font.pointSize: 14
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignLeft
+                    anchors.leftMargin: 40
+                }
+                spacing: 2
+            }
         }
     }
 
-    Button {
-        id: fasiButton
-        x: 660
-        y: 241
-        text: qsTr("FASI")
-        onClicked:
-        {
-            var component = Qt.createComponent("PhaseConfigWindow.qml");
-            phaseConfigWindow = component.createObject(mainWindow);
-            phaseConfigWindow.show();
-        }
-    }
+
 
 }
