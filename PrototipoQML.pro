@@ -1,4 +1,4 @@
-QT += quick
+QT += quick serialport
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -15,9 +15,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
     i2ccom.cpp \
-    encoder.cpp
+    encoder.cpp \
+    pigpiocommunication.cpp
 
-LIBS += -lwiringPi
+LIBS += -lwiringPi \
+        #-lpigpio \
+        -lpigpiod_if2
 
 RESOURCES += qml.qrc \
     images.qrc
@@ -40,6 +43,7 @@ HEADERS += \
     i2ccom.h \
     powerstepregisters.h \
     i2ccommands.h \
-    encoder.h
+    encoder.h \
+    pigpiocommunication.h
 
 DISTFILES +=

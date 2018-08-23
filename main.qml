@@ -5,6 +5,7 @@ import QtQuick.Controls 2.4
 import QtQuick.Controls.Material 2.4
 import Encoder 1.0
 import I2CCom 1.0
+import PigpioCommunication 1.0
 
 
 
@@ -13,6 +14,10 @@ Window {
     visible: true
     width: 800
     height: 480
+
+    PigpioCommunication {
+        id:picom
+    }
 
     Encoder {
         id: encoder
@@ -23,22 +28,22 @@ Window {
         }
         onUpdateMotorStatus: {
             switch(motor){
-            case 0x01:
+            case 0x00:
                 status ? ditoSButton.palette.button = "green" : ditoSButton.palette.button = "red"
                 break;
-            case 0x02:
+            case 0x01:
                 status ? corpoSButton.palette.button = "green" : corpoSButton.palette.button = "red"
                 break;
-            case 0x03:
+            case 0x02:
                 status ? manineSButton.palette.button = "green" : manineSButton.palette.button = "red"
                 break;
-            case 0x04:
+            case 0x03:
                 status ? chiusuraSButton.palette.button = "green" : chiusuraSButton.palette.button = "red"
                 break;
-            case 0x05:
+            case 0x04:
                 status ? lunettaSButton.palette.button = "green" : lunettaSButton.palette.button = "red"
                 break;
-            case 0x06:
+            case 0x05:
                 status ? nastroSButton.palette.button = "green" : nastroSButton.palette.button = "red"
                 break;
             }
@@ -132,7 +137,10 @@ Window {
         Pane {
             id: mainPane
             anchors.fill: parent
-            Component.onCompleted: i2ccom.getAllStatus()
+            /*Component.onCompleted: {
+                console.log("GetStatus Call")
+                i2ccom.getAllStatus()
+            }*/
 
             Button {
                 id: quitButton
@@ -182,10 +190,10 @@ Window {
                 y: 308
                 text: ""
                 antialiasing: true
-                display: AbstractButton.IconOnly
                 hoverEnabled: false
-                enabled: false
+                //enabled: false
                 //palette.button: "yellow"
+                onClicked: picom.getStatus(0x00)
             }
 
             Label {
@@ -206,8 +214,8 @@ Window {
                 text: ""
                 antialiasing: true
                 hoverEnabled: false
-                enabled: false
                 //palette.button: "yellow"
+                onClicked: picom.getStatus(0xAB)
 
             }
 
@@ -319,6 +327,14 @@ Window {
                 text: qsTr("FASI")
 
             }
+
+            Button {
+                id: getStatusButton
+                x: 28
+                y: 130
+                text: qsTr("GET STATUS")
+                onClicked: i2ccom.getAllStatus()
+            }
         }
 
         Pane {
@@ -338,7 +354,8 @@ Window {
             id: manualPane
             anchors.fill: parent
             visible: false
-            Component.onCompleted: i2ccom.getAllPosition()
+
+            onVisibleChanged: i2ccom.getAllPosition()
 
             TextField {
                 id: encoderText2

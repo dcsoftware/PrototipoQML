@@ -12,7 +12,7 @@ static int i2c_slave;
 
 I2CCom::I2CCom()
 {
-    setupI2C();
+    //setupI2C();
 }
 
 void I2CCom::setupI2C()
@@ -23,7 +23,7 @@ void I2CCom::setupI2C()
 void I2CCom::getStatus(int _motor)
 {
     wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, _motor);
-    QThread::msleep(100);
+    QThread::msleep(500);
     int status = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
     qDebug() << "Status motor " << _motor << " : " << status;
     emit updateStatus(_motor, (status != 0x00)?true:false);
@@ -32,10 +32,10 @@ void I2CCom::getStatus(int _motor)
 void I2CCom::getAllStatus()
 {
     for(int i = 0; i < 6; i++) {
-        QThread::msleep(50);
         wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, i);
-        QThread::msleep(100);
+        QThread::msleep(300);
         int status = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
+        QThread::msleep(500);
         qDebug() << "Status motor " << i << " : " << status;
         emit updateStatus(i, (status != 0x00)?true:false);
     }
@@ -55,6 +55,7 @@ void I2CCom::getAllPosition()
         wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, i);
         QThread::msleep(100);
         int pos = wiringPiI2CReadReg16(i2c_slave, ABS_POS);
+        QThread::msleep(100);
         emit updatePosition(i, pos);
     }
 }

@@ -2,6 +2,8 @@
 #include <QQmlApplicationEngine>
 #include <encoder.h>
 #include <i2ccom.h>
+#include <pigpiocommunication.h>
+
 
 int main(int argc, char *argv[])
 {
@@ -16,6 +18,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<Encoder>("Encoder", 1, 0, "Encoder");
 
     qmlRegisterType<I2CCom>("I2CCom", 1, 0, "I2CCom");
+
+    qmlRegisterType<PigpioCommunication>("PigpioCommunication", 1, 0, "PigpioCommunication");
 
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())

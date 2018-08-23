@@ -23,6 +23,12 @@
 #define CHIUSURA            0x03
 #define LUNETTA             0x04
 #define NASTRO              0x05
+#define ALL_MOTORS          0xAB
+
+#define RPI_START           0x1F
+#define RPI_STOP            0xF1
+#define ARDU_START          0x1E
+#define ARDU_STOP           0xE1
 
 
 #endif // I2CCOMMANDS_H

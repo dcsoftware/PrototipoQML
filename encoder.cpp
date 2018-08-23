@@ -16,7 +16,7 @@ Encoder::Encoder()
 
     connect(encTimer, SIGNAL(timeout()), this, SLOT(encTimerSlot()));
 
-    setupI2C();
+    //setupI2C();
 }
 
 void Encoder::setupI2C()
