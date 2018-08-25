@@ -2,7 +2,6 @@
 #include <wiringPiI2C.h>
 #include <powerstepregisters.h>
 #include <QDebug>
-#include <i2ccommands.h>
 #include <QThread>
 
 #define SLAVE_ADDRESS 0x04
@@ -22,7 +21,7 @@ void I2CCom::setupI2C()
 
 void I2CCom::getStatus(int _motor)
 {
-    wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, _motor);
+    //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, _motor);
     QThread::msleep(500);
     int status = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
     qDebug() << "Status motor " << _motor << " : " << status;
@@ -32,7 +31,7 @@ void I2CCom::getStatus(int _motor)
 void I2CCom::getAllStatus()
 {
     for(int i = 0; i < 6; i++) {
-        wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, i);
+        //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, i);
         QThread::msleep(300);
         int status = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
         QThread::msleep(500);
@@ -43,7 +42,7 @@ void I2CCom::getAllStatus()
 
 void I2CCom::getPosition(int _motor)
 {
-    wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, _motor);
+    //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, _motor);
     QThread::msleep(100);
     int pos = wiringPiI2CReadReg16(i2c_slave, ABS_POS);
     emit updatePosition(_motor, pos);
@@ -52,7 +51,7 @@ void I2CCom::getPosition(int _motor)
 void I2CCom::getAllPosition()
 {
     for(int i = 0; i < 6; i++){
-        wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, i);
+        //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, i);
         QThread::msleep(100);
         int pos = wiringPiI2CReadReg16(i2c_slave, ABS_POS);
         QThread::msleep(100);
@@ -62,7 +61,7 @@ void I2CCom::getAllPosition()
 
 void I2CCom::run(int _motor, int _speed, int _dir)
 {
-    wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, _motor);
+    //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, _motor);
     QThread::msleep(100);
     speed = _speed;
     wiringPiI2CWriteReg16(i2c_slave, RUN, _speed);
@@ -70,7 +69,7 @@ void I2CCom::run(int _motor, int _speed, int _dir)
 
 void I2CCom::move(int _motor, int _steps, int _dir)
 {
-    wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, _motor);
+    //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, _motor);
     QThread::msleep(100);
     steps = _steps;
     wiringPiI2CWriteReg16(i2c_slave, MOVE, _steps);

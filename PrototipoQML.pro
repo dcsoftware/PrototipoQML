@@ -16,7 +16,8 @@ SOURCES += \
         main.cpp \
     i2ccom.cpp \
     encoder.cpp \
-    pigpiocommunication.cpp
+    pigpiocommunication.cpp \
+    motors.cpp
 
 LIBS += -lwiringPi \
         #-lpigpio \
@@ -42,8 +43,8 @@ target.path = /home/pi
 HEADERS += \
     i2ccom.h \
     powerstepregisters.h \
-    i2ccommands.h \
     encoder.h \
-    pigpiocommunication.h
+    pigpiocommunication.h \
+    motors.h
 
 DISTFILES +=

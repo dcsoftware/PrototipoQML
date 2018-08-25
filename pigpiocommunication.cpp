@@ -1,52 +1,21 @@
 #include "pigpiocommunication.h"
 #include <QDebug>
 #include <powerstepregisters.h>
-#include <i2ccommands.h>
 #include <wiringPi.h>
 #include <wiringSerial.h>
 #include <QSerialPort>
 #include <QSerialPortInfo>
 
 
-static int pi, serialHandle;
 static QByteArray dataOut, dataIn;
 static bool answer = false;
 
 
 PigpioCommunication::PigpioCommunication() : serialPort(new QSerialPort(this))
 {
-    //setupCom();
-
     setSerialPort();
 
     connect(serialPort, SIGNAL(readyRead()), this, SLOT(serialDataReady()));
-
-}
-
-void PigpioCommunication::setupCom()
-{
-
-    pi = wiringPiSetup();
-
-    //pi = pigpio_start(0, 0);
-    qDebug() << "Result: " << pi;
-
-    char device[] = "/dev/serial0";
-
-    serialHandle = serialOpen(device, 9600);
-
-    //serialHandle = serial_open(pi, device, 9600, 0);
-
-    qDebug() << "Result: " << serialHandle;
-
-    char buffer[] = "Ciao";
-    for (int i = 0; i < 10; i++) {
-
-        serialPutchar(serialHandle, i);
-    }
-    //int result = serial_write(pi, serialHandle, buffer, 4);
-
-    //qDebug() << "Result: " << result;
 
 }
 
@@ -67,40 +36,30 @@ void PigpioCommunication::setSerialPort()
             serialPort->setFlowControl(QSerialPort::NoFlowControl);
             if(serialPort->open(QIODevice::ReadWrite))
                 qDebug() << "Serial port opened";
-
-            serialBuffer.clear();
         }
     }
 }
 
 void PigpioCommunication::serialDataReady()
 {
-    /*serialBuffer.append(serialPort->readAll());
-    int serPos;
+    dataIn.append(serialPort->readAll());
 
-    while((serPos = serialBuffer.indexOf("\n")) >= 0) {
-        serialBuffer = serialBuffer.mid(serPos + 1);
-    }*/
+    int l = dataIn.size();
 
-    dataIn = serialPort->readAll();
+    if(static_cast<int>(dataIn[l -1]) == ARDU_STOP) {
+        qDebug() << "Reception Complete ";
+        for (int i = 0; i < dataIn.size(); i++) {
+            QString asHex = QString("%1").arg(static_cast<int>(dataIn[i]), 0, 16);
+            qDebug() << asHex;
+        }
 
-    qDebug() << "Serial Data Ready: ";
-    for (int i = 0; i < dataIn.size(); i++) {
-        QString asHex = QString("%1").arg(static_cast<int>(dataIn[i]), 0, 16);
-        qDebug() << asHex;
+        dataReady();
     }
+}
 
-    //serialBuffer.clear();
-    /*for(int i = 0; i < dataIn.size(); i++)
-    {
-        qDebug() << dataIn[i] << " ";
-    }*/
-
-    //char data[100];
-
-    //int length = serialPort->readLine(data, 20);
-
-    //qDebug() << "Serial read length: " << length << " data: " << data;
+void PigpioCommunication::dataReady()
+{
+    dataIn.clear();
 }
 
 void PigpioCommunication::getStatus(int _motor)
@@ -112,10 +71,8 @@ void PigpioCommunication::getStatus(int _motor)
     dataOut[3] = RPI_STOP;
 
     serialPort->write(dataOut);
-    serialPort->waitForBytesWritten(500);
-    serialPort->waitForReadyRead(500);
-
-
+    serialPort->waitForBytesWritten(50);
+    serialPort->waitForReadyRead(50);
     answer = true;
 }
 

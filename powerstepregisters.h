@@ -190,4 +190,17 @@
 #define HARD_HIZ             0xA8
 #define GET_STATUS           0xD0
 
+#define DITO                0x00
+#define CORPO               0x01
+#define MANINE              0x02
+#define CHIUSURA            0x03
+#define LUNETTA             0x04
+#define NASTRO              0x05
+#define ALL_MOTORS          0xAB
+
+#define RPI_START           0x1F
+#define RPI_STOP            0xF1
+#define ARDU_START          0x1E
+#define ARDU_STOP           0xE1
+
 #endif // POWERSTEPREGISTERS_H

@@ -10,8 +10,8 @@ class PigpioCommunication : public QObject
 
 public:
     PigpioCommunication();
-    void setupCom();
     void setSerialPort();
+    void dataReady();
 
 public slots:
     void serialDataReady();
@@ -26,7 +26,6 @@ signals:
 
 private:
     QSerialPort *serialPort = nullptr;
-    QByteArray serialBuffer;
 };
 
 #endif // PIGPIOCOMMUNICATION_H

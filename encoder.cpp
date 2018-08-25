@@ -2,7 +2,6 @@
 #include <QDebug>
 #include <wiringPiI2C.h>
 #include <powerstepregisters.h>
-#include <i2ccommands.h>
 #include <QThread>
 
 #define SLAVE_ADDRESS 0x04
@@ -28,7 +27,7 @@ void Encoder::getMotorStatus()
 {
     qDebug() << "Setting Active motor - DITO";
 
-    wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, DITO);
+    //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, DITO);
     QThread::msleep(100);
     int ditoStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
 
@@ -39,7 +38,7 @@ void Encoder::getMotorStatus()
     qDebug() << "DITO Status: " << ditoStatus;
     qDebug() << "Setting Active motor  - CORPO";
 
-    wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, CORPO);
+    //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, CORPO);
     QThread::msleep(100);
     int corpoStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
 
@@ -51,7 +50,7 @@ void Encoder::getMotorStatus()
     qDebug() << "CORPO Status: " << corpoStatus;
     qDebug() << "Setting Active motor  - MANINE";
 
-    wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, MANINE);
+    //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, MANINE);
     QThread::msleep(100);
     int manineStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
     if(manineStatus != 0x00)
@@ -64,7 +63,7 @@ void Encoder::getMotorStatus()
     qDebug() << "MANINE Status: " << manineStatus;
     qDebug() << "Setting Active motor  - CHIUSURA";
 
-    wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, CHIUSURA);
+    //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, CHIUSURA);
     QThread::msleep(100);
     int chiusuraStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
     if(chiusuraStatus != 0x00)
@@ -77,7 +76,7 @@ void Encoder::getMotorStatus()
     qDebug() << "CHIUSURA Status: " << chiusuraStatus;
     qDebug() << "Setting Active motor  - LUNETTA";
 
-    wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, LUNETTA);
+    //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, LUNETTA);
     QThread::msleep(100);
     int lunettaStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
     if(lunettaStatus != 0x00)
@@ -90,7 +89,7 @@ void Encoder::getMotorStatus()
     qDebug() << "LUNETTA Status: " << lunettaStatus;
     qDebug() << "Setting Active motor  - NASTRO";
 
-    wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, NASTRO);
+    //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, NASTRO);
     QThread::msleep(100);
     int nastroStatus = wiringPiI2CReadReg16(i2c_slave, GET_STATUS);
     if(nastroStatus != 0x00)
@@ -136,19 +135,19 @@ void Encoder::encTimerSlot()
     case 100:
         qDebug() << "Degrees: 100 - DITO MOVE";
 
-        wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, DITO);
+        //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, DITO);
         QThread::msleep(5);
     break;
     case 200:
         qDebug() << "Degrees: 200 - LUNETTA MOVE";
 
-        wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, LUNETTA);
+        //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, LUNETTA);
         QThread::msleep(5);
         break;
     case 300:
         qDebug() << "Encoder: 300 - NASTRO MOVE";
 
-        wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, NASTRO);
+        //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, NASTRO);
         QThread::msleep(5);
     break;
     default:
