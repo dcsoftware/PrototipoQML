@@ -11,7 +11,7 @@ class PigpioCommunication : public QObject
 public:
     PigpioCommunication();
     void setSerialPort();
-    void dataReady();
+    void dataReady(QByteArray _data);
 
 public slots:
     void serialDataReady();
@@ -20,9 +20,14 @@ public slots:
     void getPosition(int _motor);
     void setParam(int _motor, int _param);
     void getParam(int _motor, int _param);
+    void setSoftSTop(int _motor);
+    void moveMotor(int _motor, int _pos, int _speed);
 
 signals:
     void readSerialData();
+    void statusUpdated(int _motor, int _status);
+    void configUpdated(int _motor, int _config);
+    void posUpdated(int _motor, long _pos);
 
 private:
     QSerialPort *serialPort = nullptr;

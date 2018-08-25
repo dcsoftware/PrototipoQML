@@ -3,6 +3,7 @@
 #include <wiringPiI2C.h>
 #include <powerstepregisters.h>
 #include <QThread>
+#include <pigpiocommunication.h>
 
 #define SLAVE_ADDRESS 0x04
 
@@ -23,7 +24,7 @@ void Encoder::setupI2C()
     i2c_slave = wiringPiI2CSetup(SLAVE_ADDRESS);
 }
 
-void Encoder::getMotorStatus()
+/*void Encoder::getMotorStatus()
 {
     qDebug() << "Setting Active motor - DITO";
 
@@ -106,7 +107,7 @@ void Encoder::getMotorStatus()
 
 
     emit closePopup();
-}
+}*/
 
 void Encoder::startTimer()
 {
@@ -134,7 +135,7 @@ void Encoder::encTimerSlot()
     {
     case 100:
         qDebug() << "Degrees: 100 - DITO MOVE";
-
+        comm->getStatus(0x00);
         //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, DITO);
         QThread::msleep(5);
     break;

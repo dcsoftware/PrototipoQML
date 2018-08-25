@@ -202,5 +202,11 @@
 #define RPI_STOP            0xF1
 #define ARDU_START          0x1E
 #define ARDU_STOP           0xE1
+#define COMMAND             1
+#define MOTOR_NUM           2
+
+#define STATUS_LEN          2
+#define CONFIG_LEN          2
+#define POS_LEN             3
 
 #endif // POWERSTEPREGISTERS_H

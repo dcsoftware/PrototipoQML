@@ -3,6 +3,7 @@
 #include <encoder.h>
 #include <i2ccom.h>
 #include <pigpiocommunication.h>
+#include <motors.h>
 
 
 int main(int argc, char *argv[])
@@ -17,9 +18,11 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<Encoder>("Encoder", 1, 0, "Encoder");
 
-    qmlRegisterType<I2CCom>("I2CCom", 1, 0, "I2CCom");
+    //qmlRegisterType<I2CCom>("I2CCom", 1, 0, "I2CCom");
 
     qmlRegisterType<PigpioCommunication>("PigpioCommunication", 1, 0, "PigpioCommunication");
+
+    qmlRegisterType<Motors>("Motors", 1, 0, "Motors");
 
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())

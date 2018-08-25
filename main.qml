@@ -5,6 +5,7 @@ import QtQuick.Controls 2.4
 import QtQuick.Controls.Material 2.4
 import Encoder 1.0
 import PigpioCommunication 1.0
+import Motors 1.0
 
 
 Window {
@@ -46,6 +47,10 @@ Window {
                 break;
             }
         }
+    }
+
+    Motors{
+        id: motor
     }
 
     InputPanel {
@@ -162,8 +167,9 @@ Window {
                 text: ""
                 antialiasing: true
                 hoverEnabled: false
+                //enabled: false
                 //palette.button: "yellow"
-                onClicked: picom.getStatus(0xAB)
+                onClicked: picom.getConfig(0x00)
 
             }
 
@@ -174,8 +180,10 @@ Window {
                 text: ""
                 antialiasing: true
                 hoverEnabled: false
-                enabled: false
+                //enabled: false
                 //palette.button: "yellow"
+                onClicked: picom.getPosition(0x00)
+
             }
 
             RoundButton {
