@@ -4,6 +4,7 @@
 #include <i2ccom.h>
 #include <pigpiocommunication.h>
 #include <motors.h>
+#include <xmlreaderwriter.h>
 
 
 int main(int argc, char *argv[])
@@ -23,6 +24,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<PigpioCommunication>("PigpioCommunication", 1, 0, "PigpioCommunication");
 
     qmlRegisterType<Motors>("Motors", 1, 0, "Motors");
+
+    qmlRegisterType<XmlReaderWriter>("XmlReaderWriter", 1, 0, "XmlReaderWriter");
 
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())

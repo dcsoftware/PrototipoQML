@@ -1,4 +1,4 @@
-QT += quick serialport
+QT += quick serialport xml
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -17,7 +17,8 @@ SOURCES += \
     i2ccom.cpp \
     encoder.cpp \
     pigpiocommunication.cpp \
-    motors.cpp
+    motors.cpp \
+    xmlreaderwriter.cpp
 
 LIBS += -lwiringPi \
         #-lpigpio \
@@ -46,6 +47,7 @@ HEADERS += \
     powerstepregisters.h \
     encoder.h \
     pigpiocommunication.h \
-    motors.h
+    motors.h \
+    xmlreaderwriter.h
 
 DISTFILES +=

@@ -6,6 +6,7 @@ import QtQuick.Controls.Material 2.4
 import Encoder 1.0
 import PigpioCommunication 1.0
 import Motors 1.0
+import XmlReaderWriter 1.0
 
 
 Window {
@@ -17,6 +18,11 @@ Window {
     PigpioCommunication {
         id:picom
     }
+
+    XmlReaderWriter {
+        id: xml
+    }
+
 
     Encoder {
         id: encoder
