@@ -21,11 +21,11 @@ public slots:
     void setParam(int _motor, int _param);
     void getParam(int _motor, int _param);
     void setSoftSTop(int _motor);
-    void moveMotor(int _motor, int _pos, int _speed);
+    void move(int _motor, int _pos, int _speed);
 
 signals:
     void readSerialData();
-    void statusUpdated(int _motor, int _status);
+    void statusUpdated(int _motor, bool _status);
     void configUpdated(int _motor, int _config);
     void posUpdated(int _motor, long _pos);
 

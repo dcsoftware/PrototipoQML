@@ -1,8 +1,10 @@
 #include "motors.h"
+#include "xmlreaderwriter.h"
 
 Motors::Motors(int _id)
 {
     id = _id;
+
 }
 
 int Motors::getMotorId()

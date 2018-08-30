@@ -10,12 +10,11 @@ class Encoder : public QObject
     Q_OBJECT
 
     QTimer *encTimer;
-    PigpioCommunication *comm;
+    //PigpioCommunication *comm;
 
 public:
     Encoder();
-    void setupI2C();
-
+    void setSerialPort();
 public slots:
     void encTimerSlot();
     void startTimer();
@@ -28,7 +27,11 @@ signals:
     void updateEncoder(int degrees);
     void closePopup();
     void updateMotorStatus(int motor, bool status);
-    void moveMotor();
+    void moveMotor(int _motor, int _pos, int _speed);
+
+private:
+    QSerialPort *serialPort = nullptr;
+
 };
 
 #endif // ENCODER_H

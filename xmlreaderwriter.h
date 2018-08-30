@@ -9,8 +9,8 @@ class XmlReaderWriter : public QObject
 {
     Q_OBJECT
 
-    QFile *file;
-    QDomDocument *doc;
+    //QFile *file;
+    //QDomDocument *doc;
 
 public:
     XmlReaderWriter();

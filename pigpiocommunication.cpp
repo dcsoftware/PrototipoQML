@@ -5,18 +5,20 @@
 #include <wiringSerial.h>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <encoder.h>
 
 
 static QByteArray dataOut, dataIn;
-static bool answer = false;
+static bool answer = false, firstStatus = false;
 
 
 PigpioCommunication::PigpioCommunication() : serialPort(new QSerialPort(this))
 {
     setSerialPort();
+    //Encoder enc;
 
     connect(serialPort, SIGNAL(readyRead()), this, SLOT(serialDataReady()));
-
+    //connect(&enc, SIGNAL(&Encoder::moveMotor), this, SLOT(move));
 }
 
 void PigpioCommunication::setSerialPort()
@@ -48,10 +50,10 @@ void PigpioCommunication::serialDataReady()
 
     if(static_cast<int>(dataIn[l -1]) == ARDU_STOP) {
         qDebug() << "Reception Complete ";
-        /*for (int i = 0; i < dataIn.size(); i++) {
+        for (int i = 0; i < dataIn.size(); i++) {
             QString asHex = QString("%1").arg(static_cast<int>(dataIn[i]), 0, 16);
             qDebug() << asHex;
-        }*/
+        }
 
         dataReady(dataIn);
         dataIn.clear();
@@ -62,14 +64,21 @@ void PigpioCommunication::dataReady(QByteArray _data)
 {
     int motor = _data[MOTOR_NUM];
 
-    if(motor == ALL_MOTORS) {
-    } else {
-
         switch(_data[COMMAND]){
         case GET_STATUS:{
-            int status = (_data[MOTOR_NUM + 1] << 8) | _data[MOTOR_NUM + 2];
-            qDebug() << "Motor " << motor << " status: " << status;
-            emit statusUpdated(motor, status);
+            if(motor == ALL_MOTORS){
+                qDebug() << "All motor status, length: " << _data.size();
+                for(int i = 0; i < NUM_BOARDS; i++) {
+                    int _m = _data[i*3+3];
+                    int status = (_data[i*3+4] << 8) | _data[i*3+5];
+                    qDebug() << "Motor " << _m << " status: " << status;
+                    emit statusUpdated(_data[i*3+3], (status == 0x00) ? false : true);
+                }
+            } else {
+                int status = (_data[MOTOR_NUM + 1] << 8) | _data[MOTOR_NUM + 2];
+                qDebug() << "Motor " << motor << " status: " << status;
+                emit statusUpdated(motor, (status == 0x00) ? false : true);
+            }
             break;
         }
         case CONFIG:{
@@ -85,8 +94,6 @@ void PigpioCommunication::dataReady(QByteArray _data)
             break;
         }
         }
-
-    }
 }
 
 void PigpioCommunication::getStatus(int _motor)
@@ -160,16 +167,20 @@ void PigpioCommunication::setParam(int _motor, int _param)
     serialPort->waitForReadyRead(50);
 }
 
-void PigpioCommunication::moveMotor(int _motor, int _pos, int _speed)
+void PigpioCommunication::move(int _motor, int _pos, int _speed)
 {
-    dataOut.resize(6);
+    qDebug() << "Received MOVE command";
+
+    dataOut.resize(8);
 
     dataOut[0] = RPI_START;
-    dataOut[1] = GOTO;
+    dataOut[1] = MOVE;
     dataOut[2] = _motor;
-    dataOut[3] = _pos;
-    dataOut[4] = _speed;
-    dataOut[5] = RPI_STOP;
+    dataOut[3] = _pos << 16;
+    dataOut[4] = _pos << 8;
+    dataOut[5] = _pos;
+    dataOut[6] = _speed;
+    dataOut[7] = RPI_STOP;
 
     serialPort->write(dataOut);
     serialPort->waitForBytesWritten(50);

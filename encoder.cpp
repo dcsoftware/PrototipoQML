@@ -4,6 +4,10 @@
 #include <powerstepregisters.h>
 #include <QThread>
 #include <pigpiocommunication.h>
+#include <motors.h>
+#include <QtSerialPort>
+#include <QSerialPortInfo>
+
 
 #define SLAVE_ADDRESS 0x04
 
@@ -15,13 +19,14 @@ Encoder::Encoder()
     encTimer = new QTimer();
 
     connect(encTimer, SIGNAL(timeout()), this, SLOT(encTimerSlot()));
+    //connect(this, SIGNAL(moveMotor(int &, int &, int &)), &piCom, SLOT(move(int &, int &, int &)));
 
-    //setupI2C();
+    setSerialPort();
+
 }
 
-void Encoder::setupI2C()
-{
-    i2c_slave = wiringPiI2CSetup(SLAVE_ADDRESS);
+void Encoder::setSerialPort() {
+
 }
 
 /*void Encoder::getMotorStatus()
@@ -111,7 +116,7 @@ void Encoder::setupI2C()
 
 void Encoder::startTimer()
 {
-    encTimer->start(100);
+    encTimer->start(50);
     qDebug() << "Starting encoder";
 }
 
@@ -133,9 +138,10 @@ void Encoder::encTimerSlot()
     qDebug() << "Degrees: " << degrees;
     switch(degrees)
     {
-    case 100:
+    case 20:
         qDebug() << "Degrees: 100 - DITO MOVE";
-        comm->getStatus(0x00);
+
+        emit moveMotor(0x00, 500, 2000);
         //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, DITO);
         QThread::msleep(5);
     break;
@@ -160,6 +166,7 @@ void Encoder::encTimerSlot()
 void Encoder::resetTimer()
 {
     degrees = 0;
+    emit updateEncoder(degrees);
 }
 
 

@@ -204,6 +204,7 @@
 #define ARDU_STOP           0xE1
 #define COMMAND             1
 #define MOTOR_NUM           2
+#define NUM_BOARDS          3
 
 #define STATUS_LEN          2
 #define CONFIG_LEN          2

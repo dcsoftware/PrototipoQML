@@ -19,6 +19,11 @@ public:
     int id;
     int status;
     int config;
+    QString name;
+    int startPos1;
+    int startPos2;
+    int pos1;
+    int pos2;
 
 public slots:
 
