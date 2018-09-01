@@ -1,7 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <encoder.h>
-#include <i2ccom.h>
 #include <pigpiocommunication.h>
 #include <motors.h>
 #include <xmlreaderwriter.h>
@@ -18,8 +17,6 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     qmlRegisterType<Encoder>("Encoder", 1, 0, "Encoder");
-
-    //qmlRegisterType<I2CCom>("I2CCom", 1, 0, "I2CCom");
 
     qmlRegisterType<PigpioCommunication>("PigpioCommunication", 1, 0, "PigpioCommunication");
 

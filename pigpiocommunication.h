@@ -14,7 +14,7 @@ public:
     void dataReady(QByteArray _data);
 
 public slots:
-    void serialDataReady();
+    void serialDataReady1();
     void getStatus(int _motor);
     void getConfig(int _motor);
     void getPosition(int _motor);

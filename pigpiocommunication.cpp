@@ -14,10 +14,10 @@ static bool answer = false, firstStatus = false;
 
 PigpioCommunication::PigpioCommunication() : serialPort(new QSerialPort(this))
 {
-    setSerialPort();
+    //setSerialPort();
     //Encoder enc;
 
-    connect(serialPort, SIGNAL(readyRead()), this, SLOT(serialDataReady()));
+    connect(serialPort, SIGNAL(readyRead()), this, SLOT(serialDataReady1()));
     //connect(&enc, SIGNAL(&Encoder::moveMotor), this, SLOT(move));
 }
 
@@ -42,7 +42,7 @@ void PigpioCommunication::setSerialPort()
     }
 }
 
-void PigpioCommunication::serialDataReady()
+void PigpioCommunication::serialDataReady1()
 {
     dataIn.append(serialPort->readAll());
 

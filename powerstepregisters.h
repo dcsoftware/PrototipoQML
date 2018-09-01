@@ -205,9 +205,14 @@
 #define COMMAND             1
 #define MOTOR_NUM           2
 #define NUM_BOARDS          3
+#define PARAM_GET           0x01
+#define PARAM_SET           0x00
+#define PWM_FREQ            0xFA
 
 #define STATUS_LEN          2
 #define CONFIG_LEN          2
 #define POS_LEN             3
+#define MOVE_LEN            4
+
 
 #endif // POWERSTEPREGISTERS_H

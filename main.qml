@@ -15,7 +15,7 @@ Window {
     width: 800
     height: 480
 
-    PigpioCommunication {
+    /*PigpioCommunication {
         id:picom
         onStatusUpdated: {
             switch(_motor){
@@ -57,7 +57,7 @@ Window {
             stopEncButton.enabled = (ditoSButton.enabled && corpoSButton.enabled && manineSButton.enabled)
 
         }
-    }
+    }*/
 
     XmlReaderWriter {
         id: xml
@@ -67,31 +67,50 @@ Window {
     Encoder {
         id: encoder
 
-        onUpdateEncoder: encoderText.text = qsTr("GRADI ENCODER: " + degrees)
+        onUpdateEncoder: encoderText.text = qsTr("ENCODER: " + degrees)
         onClosePopup: {
             //ditoSButton.palette.button = "green"
         }
-        onUpdateMotorStatus: {
-            switch(motor){
+        onStatusUpdated: {
+            switch(_motor){
             case 0x00:
-                status ? ditoSButton.palette.button = "green" : ditoSButton.palette.button = "red"
+                _status ? ditoSButton.palette.button = "green" : ditoSButton.palette.button = "red"
+                _status ? ditoSButton.enabled = true : ditoSButton.enabled = false;
+                _status ? ditoPos1Button.enabled = true : ditoPos1Button.enabled = false
+                _status ? ditoPos2Button.enabled = true : ditoPos2Button.enabled = false
                 break;
             case 0x01:
-                status ? corpoSButton.palette.button = "green" : corpoSButton.palette.button = "red"
+                _status ? corpoSButton.palette.button = "green" : corpoSButton.palette.button = "red"
+                _status ? corpoSButton.enabled = true : corpoSButton.enabled = false;
+                _status ? corpoPos1Button.enabled = true : corpoPos1Button.enabled = false
+                _status ? corpoPos1Button.enabled = true : corpoPos1Button.enabled = false
                 break;
             case 0x02:
-                status ? manineSButton.palette.button = "green" : manineSButton.palette.button = "red"
+                _status ? manineSButton.palette.button = "green" : manineSButton.palette.button = "red"
+                _status ? manineSButton.enabled = true : manineSButton.enabled = false;
+                _status ? maninePos1Button.enabled = true : maninePos1Button.enabled = false
+                _status ? maninePos1Button.enabled = true : maninePos1Button.enabled = false
                 break;
             case 0x03:
-                status ? chiusuraSButton.palette.button = "green" : chiusuraSButton.palette.button = "red"
+                _status ? chiusuraSButton.palette.button = "green" : chiusuraSButton.palette.button = "red"
+                _status ? chiusuraSButton.enabled = true : chiusuraSButton.enabled = false;
+                _status ? chiusuraPos1Button.enabled = true : chiusuraPos1Button.enabled = false
                 break;
             case 0x04:
-                status ? lunettaSButton.palette.button = "green" : lunettaSButton.palette.button = "red"
+                _status ? lunettaSButton.palette.button = "green" : lunettaSButton.palette.button = "red"
+                _status ? lunettaSButton.enabled = true : lunettaSButton.enabled = false;
+                _status ? lunettaPos1Button.enabled = true : lunettaPos1Button.enabled = false
                 break;
             case 0x05:
-                status ? nastroSButton.palette.button = "green" : nastroSButton.palette.button = "red"
+                _status ? nastroSButton.palette.button = "green" : nastroSButton.palette.button = "red"
+                _status ? nastroSButton.enabled = true : nastroSButton.enabled = false;
+                _status ? nastroPos1Button.enabled = true : nastroPos1Button.enabled = false
+                _status ? nastroPos2Button.enabled = true : nastroPos2Button.enabled = false
                 break;
             }
+            startEncButton.enabled = (ditoSButton.enabled && corpoSButton.enabled && manineSButton.enabled)
+            stopEncButton.enabled = (ditoSButton.enabled && corpoSButton.enabled && manineSButton.enabled)
+
         }
     }
 
@@ -135,35 +154,50 @@ Window {
 
         Pane {
             id: mainPane
+            antialiasing: true
+            z: 1
             anchors.fill: parent
             Component.onCompleted: {
                 console.log("GetStatus Call")
-                picom.getStatus(0xAB);
+                encoder.getStatus(0xAB);
             }
 
             Button {
                 id: quitButton
                 x: 648
                 y: 388
-                text: qsTr("QUIT")
+                height: 50
+                text: qsTr("ESCI")
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 20
+                font.pointSize: 20
+                anchors.right: parent.right
+                anchors.rightMargin: 20
                 onClicked: close();
             }
 
             TextField {
                 id: encoderText
-                x: 513
-                y: 28
-                width: 235
-                height: 40
-                text: "GRADI ENCODER: "
+                x: 550
+                y: 20
+                width: 230
+                height: 50
+                text: "ENCODER: "
+                font.pointSize: 20
+                anchors.right: parent.right
+                anchors.rightMargin: 20
                 enabled: false
             }
 
             Button {
                 id: startEncButton
-                x: 28
-                y: 28
+                x: 20
+                y: 20
+                width: 100
+                height: 50
                 text: qsTr("START")
+                display: AbstractButton.TextOnly
+                font.pointSize: 18
                 font.bold: true
                 enabled: false
                 onClicked: encoder.startTimer();
@@ -171,41 +205,50 @@ Window {
 
             Button {
                 id: stopEncButton
-                x: 238
-                y: 28
+                x: 150
+                y: 20
+                height: 50
                 text: qsTr("STOP")
+                display: AbstractButton.TextOnly
+                font.bold: true
+                font.pointSize: 20
                 enabled: false
                 onClicked: encoder.stopTimer();
             }
 
             Button {
                 id: resetEncButton
-                x: 648
-                y: 318
+                x: 300
+                y: 20
+                height: 50
                 text: qsTr("RESET")
+                display: AbstractButton.TextOnly
+                font.bold: true
+                font.pointSize: 20
                 onClicked: {
                     encoder.resetTimer();
-                    picom.getStatus(0xAB);
+                    encoder.getStatus(0xAB)
                 }
             }
 
             RoundButton {
                 id: ditoSButton
-                x: 58
-                y: 308
+                x: 40
+                y: 320
                 text: ""
+                enabled: false
                 antialiasing: true
                 hoverEnabled: false
                 //enabled: false
                 //palette.button: "yellow"
-                onClicked: picom.getStatus(0x00)
+                onClicked: encoder.getStatus(0x00)
             }
 
             Label {
                 id: label
-                x: 58
-                y: 373
-                width: 40
+                x: 15
+                y: 380
+                width: 90
                 text: qsTr("DITO")
                 font.pointSize: 13
                 horizontalAlignment: Text.AlignHCenter
@@ -214,73 +257,81 @@ Window {
 
             RoundButton {
                 id: lunettaSButton
-                x: 138
-                y: 308
+                y: 320
                 text: ""
+                anchors.left: chiusuraSButton.right
+                anchors.leftMargin: 60
+                enabled: false
                 antialiasing: true
                 hoverEnabled: false
                 //enabled: false
                 //palette.button: "yellow"
-                onClicked: picom.getStatus(0x04)
+                onClicked: encoder.getStatus(0x04)
 
             }
 
             RoundButton {
                 id: nastroSButton
-                x: 218
-                y: 308
+                y: 320
                 text: ""
+                anchors.left: lunettaSButton.right
+                anchors.leftMargin: 60
+                enabled: false
                 antialiasing: true
                 hoverEnabled: false
                 //enabled: false
                 //palette.button: "yellow"
-                onClicked: picom.getStatus(0x05)
+                onClicked: encoder.getStatus(0x05)
 
             }
 
             RoundButton {
                 id: corpoSButton
-                x: 298
-                y: 308
+                y: 320
                 text: ""
+                anchors.left: ditoSButton.right
+                anchors.leftMargin: 60
                 antialiasing: true
                 hoverEnabled: false
                 enabled: false
                 //palette.button: "yellow"
-                onClicked: picom.getStatus(0x01)
+                onClicked: encoder.getStatus(0x01)
 
             }
 
             RoundButton {
                 id: manineSButton
-                x: 378
-                y: 308
+                y: 320
                 text: ""
+                anchors.left: corpoSButton.right
+                anchors.leftMargin: 60
                 antialiasing: true
                 hoverEnabled: false
                 enabled: false
                 //palette.button: "yellow"
-                onClicked: picom.getStatus(0x02)
+                onClicked: encoder.getStatus(0x02)
 
             }
 
             RoundButton {
                 id: chiusuraSButton
-                x: 458
-                y: 308
+                y: 320
                 text: ""
+                anchors.left: manineSButton.right
+                anchors.leftMargin: 60
                 antialiasing: true
                 hoverEnabled: false
                 enabled: false
                 //palette.button: "yellow"
-                onClicked: picom.getStatus(0x03)
+                onClicked: encoder.getStatus(0x03)
 
             }
 
             Label {
                 id: label1
-                x: 121
-                y: 373
+                x: 415
+                y: 380
+                width: 90
                 text: qsTr("LUNETTA")
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
@@ -289,8 +340,9 @@ Window {
 
             Label {
                 id: label2
-                x: 205
-                y: 373
+                x: 515
+                y: 380
+                width: 90
                 text: qsTr("NASTRO")
                 font.pointSize: 13
                 verticalAlignment: Text.AlignVCenter
@@ -299,8 +351,9 @@ Window {
 
             Label {
                 id: label3
-                x: 289
-                y: 373
+                x: 115
+                y: 380
+                width: 90
                 text: qsTr("CORPO")
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
@@ -309,8 +362,9 @@ Window {
 
             Label {
                 id: label4
-                x: 365
-                y: 373
+                x: 215
+                y: 380
+                width: 90
                 text: qsTr("MANINE")
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
@@ -319,17 +373,21 @@ Window {
 
             Label {
                 id: label5
-                x: 437
-                y: 373
+                x: 315
+                y: 380
+                width: 90
                 text: qsTr("CHIUSURA")
+                horizontalAlignment: Text.AlignHCenter
                 font.pointSize: 13
             }
 
             Button {
                 id: manualButton
                 x: 648
-                y: 151
+                y: 100
                 text: qsTr("MANUALE")
+                anchors.right: parent.right
+                anchors.rightMargin: 20
                 onClicked: manualPane.visible = true
 
             }
@@ -337,35 +395,98 @@ Window {
             Button {
                 id: fasiButton
                 x: 648
-                y: 229
+                y: 170
                 text: qsTr("FASI")
+                anchors.right: parent.right
+                anchors.rightMargin: 20
 
             }
 
             Button {
                 id: getStatusButton
                 x: 28
-                y: 130
+                y: 320
                 text: qsTr("GET STATUS")
-                onClicked: i2ccom.getAllStatus()
+                anchors.right: parent.right
+                anchors.rightMargin: 20
+                onClicked: encoder.getStatus(0xAB)
+            }
+
+            Button {
+                id: paramButton
+                x: 656
+                y: 240
+                text: qsTr("PARAMETRI")
+                anchors.right: parent.right
+                anchors.rightMargin: 20
             }
         }
 
         Pane {
-            id: motorConfigPane
+            id: ditoConfigPane
+            z: 1
             anchors.fill: parent
-            visible: false
+            visible: true
+
+            Label {
+                id: ditoConfigPanelabel
+                x: 303
+                y: 0
+                width: 350
+                height: 30
+                text: qsTr("PARAMETRI MOTORE DITO")
+                wrapMode: Text.NoWrap
+                font.pointSize: 20
+                anchors.horizontalCenter: parent.horizontalCenter
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            Label {
+                id: label6
+                x: 20
+                y: 45
+                height: 20
+                text: qsTr("STEP MODE")
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            ComboBox {
+                id: stepCombo
+                x: 173
+                y: 45
+                height: 20
+            }
+
+            Label {
+                id: label7
+                x: 20
+                y: 80
+                height: 20
+                text: qsTr("OVERCURRENT TH")
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            ComboBox {
+                id: ocCombo
+                x: 173
+                y: 80
+                height: 20
+            }
 
         }
 
         Pane {
             id: phasesConfigPane
+            z: -1
             anchors.fill: parent
             visible: false
         }
 
         Pane {
             id: manualPane
+            z: -1
             anchors.fill: parent
             visible: false
 
@@ -740,3 +861,9 @@ Window {
         }
     }
 }
+
+/*##^## Designer {
+    D{i:87;anchors_x:530}D{i:88;anchors_x:418}D{i:89;anchors_x:140}D{i:90;anchors_x:378}
+D{i:91;anchors_x:458}D{i:136;anchors_x:303;anchors_y:14}
+}
+ ##^##*/
