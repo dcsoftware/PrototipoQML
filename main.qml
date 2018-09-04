@@ -110,7 +110,7 @@ Window {
             }
             startEncButton.enabled = (ditoSButton.enabled && corpoSButton.enabled && manineSButton.enabled)
             stopEncButton.enabled = (ditoSButton.enabled && corpoSButton.enabled && manineSButton.enabled)
-
+            encoder.setSoftStop(0xAB)
         }
     }
 
@@ -456,6 +456,7 @@ Window {
                 x: 173
                 y: 45
                 height: 20
+                //model: encoder.stepList
             }
 
             Label {
@@ -473,6 +474,7 @@ Window {
                 x: 173
                 y: 80
                 height: 20
+                //model: encoder.ocdTHList
             }
 
         }

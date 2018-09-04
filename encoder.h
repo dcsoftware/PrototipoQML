@@ -4,10 +4,15 @@
 #include <QObject>
 #include <QTimer>
 #include <pigpiocommunication.h>
+#include <values.h>
 
 class Encoder : public QObject
 {
     Q_OBJECT
+    //QStringList m_freqList = freqList;
+    //Q_PROPERTY(QStringList m_freqList READ m_freqList)
+    //Q_PROPERTY(QStringList stepList READ stepList)
+    //Q_PROPERTY(QStringList ocdTHList READ ocdTHList)
 
     QTimer *encTimer;
     //PigpioCommunication *comm;
@@ -16,6 +21,7 @@ public:
     Encoder();
     void setSerialPort();
     void decodeData(QByteArray _data);
+
 
 public slots:
     void encTimerSlot();
@@ -28,7 +34,7 @@ public slots:
     void getPosition(int _motor);
     void setParam(int _motor, int _param);
     void getParam(int _motor, int _param);
-    void setSoftSTop(int _motor);
+    void setSoftStop(int _motor);
     void moveMotor(int _motor, unsigned long _pos, int _dir);
     void configParameter(int _motor, int _param, int _getSet, int data);
     void configSpeed(int _motor, int _param, int _getSet, unsigned long _data);
@@ -43,6 +49,15 @@ signals:
     void statusUpdated(int _motor, bool _status);
     void configUpdated(int _motor, int _config);
     void posUpdated(int _motor, long _pos);
+    void stepModeUpdated(int _motor, int _data);
+    void ocdThUpdated(int _motor, int _data);
+    void ocdSDUpdated(int _motor, int _data);
+    void oscUpdated(int _motor, int _data);
+    void maxSpeedUpdated(int _motor, long _data);
+    void fullSpeedUpdated(int _motor, long _data);
+    void accUpdated(int _motor, long _data);
+    void decUpdated(int _motor, long _data);
+
 
 private:
     QSerialPort *serialPort = nullptr;

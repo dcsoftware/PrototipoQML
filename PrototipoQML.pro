@@ -1,4 +1,4 @@
-QT += quick serialport xml
+QT += quick serialport xml sql
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -48,6 +48,7 @@ HEADERS += \
     encoder.h \
     pigpiocommunication.h \
     motors.h \
-    xmlreaderwriter.h
+    xmlreaderwriter.h \
+    values.h
 
 DISTFILES +=

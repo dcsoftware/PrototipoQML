@@ -24,6 +24,7 @@ public:
     int startPos2;
     int pos1;
     int pos2;
+    int speed;
 
 public slots:
 
