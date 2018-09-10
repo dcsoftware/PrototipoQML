@@ -12,24 +12,23 @@ XmlReaderWriter::XmlReaderWriter()
 {
     QString errMsg;
     QFileDevice::FileError err = QFileDevice::NoError;
-    QFile file(":/xml/motors.xml");
+    //QFile file(":/xml/motors.xml");
 
 
-    // Sostituire con QFile::exists() e poi fare la copia e poi istanziare il device senza creare 2 QFile
-    if(file.exists()) {
+    if(QFile::exists(":/xml/motors.xml")) {
         if(QFile::exists("/home/pi/motorsnew.xml")) {
             bool rem = QFile::remove("/home/pi/motorsnew.xml");
             qDebug() << "Deleting old File is " << rem;
         }
-        bool ret = file.copy("/home/pi/motorsnew.xml");
+        bool ret = QFile::copy(":/xml/motors.xml", "/home/pi/motorsnew.xml");
         bool ret1 = QFile::setPermissions("/home/pi/motorsnew.xml", QFile::WriteOwner | QFile::ReadOwner);
 
         qDebug() << "copy is: " << ret << " and set permission is " << ret1;
     }
 
-    QFile newFile("/home/pi/motorsnew.xml");
+    QFile file("/home/pi/motorsnew.xml");
 
-    if (!newFile.open(QFile::ReadWrite) || !doc.setContent(&newFile)) {
+    if (!file.open(QFile::ReadWrite) || !doc.setContent(&file)) {
         errMsg = file.errorString();
         err = file.error();
            qDebug() << "Failed to open file";
@@ -42,6 +41,9 @@ void XmlReaderWriter::readDoc()
 {
     QDomNodeList motors = doc.elementsByTagName("motor");
     for(int i = 0; i < motors.size(); i++) {
+        QDomNode n = motors.item(i);
+        QDomElement id = n.firstChildElement("id");
+        QDomElement name = n.firstChildElement("name");
 
     }
 }
