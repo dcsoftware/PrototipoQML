@@ -7,6 +7,16 @@ Motors::Motors(int _id)
 
 }
 
+Motors::Motors(int _id, QString _name, const QString _pos[], const QString _degrees[]) {
+
+    id = _id;
+    name = _name;
+    for(int i = 0; i < _pos->length(); i++){
+        pos[i] = _pos[i];
+        degrees[i] = _degrees[i];
+    }
+}
+
 int Motors::getMotorId()
 {
     return id;

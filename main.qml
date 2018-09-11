@@ -112,6 +112,13 @@ Window {
             stopEncButton.enabled = (ditoSButton.enabled && corpoSButton.enabled && manineSButton.enabled)
             encoder.setSoftStop(0xAB)
         }
+
+        onStepModeUpdated: {
+            switch (_motor) {
+            case 0x00:
+                stepCombo.currentIndex = _data
+            }
+        }
     }
 
     Motors{
@@ -241,7 +248,7 @@ Window {
                 hoverEnabled: false
                 //enabled: false
                 //palette.button: "yellow"
-                onClicked: encoder.getStatus(0x00)
+                onClicked: ditoConfigPane.visible = true//encoder.getStatus(0x00)
             }
 
             Label {
@@ -426,7 +433,8 @@ Window {
             id: ditoConfigPane
             z: 1
             anchors.fill: parent
-            visible: true
+            visible: false
+            onVisibleChanged: visible ? encoder.configParameter(0x00, 0x16, 0x01, 0x00) : null
 
             Label {
                 id: ditoConfigPanelabel
@@ -456,7 +464,8 @@ Window {
                 x: 173
                 y: 45
                 height: 20
-                //model: encoder.stepList
+                model: stepComboModel
+                textRole: "display"
             }
 
             Label {
@@ -474,7 +483,16 @@ Window {
                 x: 173
                 y: 80
                 height: 20
-                //model: encoder.ocdTHList
+                model: ocdTHComboModel
+                textRole: "display"
+            }
+
+            Button {
+                id: ditoConfigCloseButton
+                x: 653
+                y: 395
+                text: qsTr("CHIUDI")
+                onClicked: ditoConfigPane.visible = false
             }
 
         }
@@ -488,7 +506,7 @@ Window {
 
         Pane {
             id: manualPane
-            z: -1
+            z: 0
             anchors.fill: parent
             visible: false
 
@@ -863,9 +881,3 @@ Window {
         }
     }
 }
-
-/*##^## Designer {
-    D{i:87;anchors_x:530}D{i:88;anchors_x:418}D{i:89;anchors_x:140}D{i:90;anchors_x:378}
-D{i:91;anchors_x:458}D{i:136;anchors_x:303;anchors_y:14}
-}
- ##^##*/

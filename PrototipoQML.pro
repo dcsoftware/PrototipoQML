@@ -49,6 +49,7 @@ HEADERS += \
     pigpiocommunication.h \
     motors.h \
     xmlreaderwriter.h \
-    values.h
+    values.h \
+    gpiopins.h
 
 DISTFILES +=

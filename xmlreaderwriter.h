@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QFile>
 #include <QDomDocument>
+#include <motors.h>
 
 class XmlReaderWriter : public QObject
 {
@@ -15,13 +16,10 @@ class XmlReaderWriter : public QObject
 public:
     XmlReaderWriter();
 
-    void readDoc();
+    void readElements(QDomElement _root, QString _tag);
     void writeDoc();
 
 public slots:
-
-signals:
-
 
 };
 

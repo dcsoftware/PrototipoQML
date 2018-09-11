@@ -19,6 +19,7 @@ static long longBuffer;
 
 Encoder::Encoder() : serialPort(new QSerialPort(this))
 {
+    qDebug() << "Encoder run";
     encTimer = new QTimer();
 
 
@@ -132,8 +133,10 @@ void Encoder::decodeData(QByteArray _data)
         }
         case STEP_MODE: {
             qDebug() << "Motor STEP MODE, length: " << _data.size();
-            dataBuffer = static_cast<int>((_data[4]));
+            dataBuffer = static_cast<int>((_data[4]));            
+
             qDebug() << "Motor " << motor << " : " << dataBuffer;
+
             emit stepModeUpdated(motor, dataBuffer);
             break;
         }

@@ -1,83 +1,17 @@
 <?xml version="1.0"?>
-<motors>
-    <motor>
-        <id>0</id>
-        <name>DITO</name>
-        <position>
-            <encoder>110</encoder>
-            <quota>54</quota>
-        </position>
-        <position>
-            <encoder>5</encoder>
-            <quota>0</quota>
-        </position>
-    </motor>
-    <motor>
-        <id>1</id>
-        <name>CORPO</name>
-        <position>
-            <encoder>240</encoder>
-            <quota>78</quota>
-        </position>
-        <position>
-            <encoder>13</encoder>
-            <quota>0</quota>
-        </position>>
-    </motor>
-    <motor>
-        <id>2</id>
-        <name>MANINE</name>
-        <position>
-            <encoder>240</encoder>
-            <quota>78</quota>
-        </position>
-        <position>
-            <encoder>315</encoder>
-            <quota>131,4</quota>
-        </position>
-        <position>
-            <encoder>13</encoder>
-            <quota>0</quota>
-        </position>
-    </motor>
-    <motor>
-        <id>3</id>
-        <name>CHIUSURA</name>
-        <position>
-            <encoder>287</encoder>
-            <quota>114</quota>
-        </position>
-        <position>
-            <encoder>330</encoder>
-            <quota>147</quota>
-        </position>
-        <position>
-            <encoder>340</encoder>
-            <quota>0</quota>
-        </position>
-    </motor>
-        <motor>
-        <id>4</id>
-        <name>LUNETTA</name>
-        <position>
-            <encoder>90</encoder>
-            <quota>124,8</quota>
-        </position>
-        <position>
-            <encoder>197</encoder>
-            <quota>175,8</quota>
-        </position>
-        <position>
-            <encoder>270</encoder>
-            <quota>0</quota>
-        </position>
-    </motor>
-    <motor>
-        <id>5</id>
-        <name>NASTRO</name>
-        <position>
-            <encoder>250</encoder>
-            <quota>168</quota>
-        </position>
-    </motor>
-</motors>
+<phases>
+    <position id="00" motor="0" encoder="5" degrees="0"/>
+    <position id="01" motor="1" encoder="13" degrees="0"/>
+    <position id="02" motor="2" encoder="13" degrees="0"/>
+    <position id="03" motor="4" encoder="90" degrees="124.8"/>
+    <position id="04" motor="0" encoder="110" degrees="54"/>
+    <position id="05" motor="4" encoder="197" degrees="175.8"/>
+    <position id="06" motor="1" encoder="240" degrees="78"/>
+    <position id="07" motor="2" encoder="240" degrees="78"/>
+    <position id="08" motor="5" encoder="250" degrees="168"/>
+    <position id="09" motor="4" encoder="270" degrees="0"/>
+    <position id="10" motor="3" encoder="287" degrees="114"/>
+    <position id="11" motor="2" encoder="315" degrees="131.4"/>
+    <position id="12" motor="3" encoder="330" degrees="147"/>
+    <position id="13" motor="3" encoder="340" degrees="0"/>
+</phases>

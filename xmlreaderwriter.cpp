@@ -6,14 +6,14 @@
 #include <motors.h>
 
 static QDomDocument doc;
-
+static QDomElement root;
+static QDomNodeList phases;
 
 XmlReaderWriter::XmlReaderWriter()
 {
+    qDebug() << "XmlReaderWriter run";
     QString errMsg;
     QFileDevice::FileError err = QFileDevice::NoError;
-    //QFile file(":/xml/motors.xml");
-
 
     if(QFile::exists(":/xml/motors.xml")) {
         if(QFile::exists("/home/pi/motorsnew.xml")) {
@@ -34,17 +34,41 @@ XmlReaderWriter::XmlReaderWriter()
            qDebug() << "Failed to open file";
            qDebug() << errMsg;
     }
-    //readDoc();
+
+    root = doc.firstChildElement();
+
+    phases = root.elementsByTagName("position");
+
+    for(int i = 0; i < phases.count(); i++) {
+        QDomNode phaseNode = phases.at(i);
+        if(phaseNode.isElement()) {
+            QDomElement phase = phaseNode.toElement();
+            qDebug() << "ID: " << phase.attribute("id") << ", MOTOR " << phase.attribute("motor")
+                     << ", ENCODER " << phase.attribute("encoder") << ", PASSO " << phase.attribute("degrees");
+        }
+    }
 }
 
-void XmlReaderWriter::readDoc()
+void XmlReaderWriter::readElements(QDomElement _root, QString _tag)
 {
-    QDomNodeList motors = doc.elementsByTagName("motor");
-    for(int i = 0; i < motors.size(); i++) {
-        QDomNode n = motors.item(i);
-        QDomElement id = n.firstChildElement("id");
-        QDomElement name = n.firstChildElement("name");
+    QString _id = _root.attribute("id");
+    QString _name = _root.attribute("name");
 
+    qDebug() << "Motor id = " << _id << ", Name: " << _name;
+
+    QDomNodeList nodes = _root.elementsByTagName(_tag);
+    QString pos[nodes.count()];
+    QString degrees[nodes.count()];
+
+    for(int i = 0; i < nodes.count(); i++) {
+        QDomNode n = nodes.at(i);
+        if(n.isElement()) {
+            QDomElement m = n.toElement();
+            pos[i] = m.attribute("encoder");
+            degrees[i] = m.attribute("degrees");
+
+            qDebug() << "Position " << i << ", gradi encoder: " << pos[i] << ", passo: " << degrees[i];
+        }
     }
 }
 

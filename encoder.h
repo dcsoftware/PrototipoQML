@@ -9,13 +9,8 @@
 class Encoder : public QObject
 {
     Q_OBJECT
-    //QStringList m_freqList = freqList;
-    //Q_PROPERTY(QStringList m_freqList READ m_freqList)
-    //Q_PROPERTY(QStringList stepList READ stepList)
-    //Q_PROPERTY(QStringList ocdTHList READ ocdTHList)
 
     QTimer *encTimer;
-    //PigpioCommunication *comm;
 
 public:
     Encoder();

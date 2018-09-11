@@ -9,6 +9,7 @@ class Motors : public QObject
 
 public:
     Motors(int _id = 0);
+    Motors(int _id, QString _name, const QString _pos[], const QString _degrees[]);
 
     int getMotorId();
     void setMotorStatus(int _status);
@@ -25,6 +26,9 @@ public:
     int pos1;
     int pos2;
     int speed;
+    QString degrees[3];
+    QString pos[3];
+
 
 public slots:
 
