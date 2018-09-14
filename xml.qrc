@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/xml">
         <file>motors.xml</file>
+        <file>motors2.xml</file>
+        <file>motors3.xml</file>
     </qresource>
+    <qresource prefix="/"/>
 </RCC>

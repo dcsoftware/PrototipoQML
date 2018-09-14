@@ -18,6 +18,10 @@ public:
 
     void readElements(QDomElement _root, QString _tag);
     void writeDoc();
+    static QStringList getPositionArray();
+    static QStringList getEncoderArray();
+    static QStringList getMotorsArray();
+    static QStringList getStepsArray();
 
 public slots:
 

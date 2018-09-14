@@ -1,6 +1,9 @@
 #ifndef POWERSTEPREGISTERS_H
 #define POWERSTEPREGISTERS_H
 
+#define FWD         0x01
+#define REV         0x00
+
 // STEP_MODE option values.
 // First comes the "microsteps per step" options...
 #define STEP_MODE_STEP_SEL 0x07  // Mask for these bits only.

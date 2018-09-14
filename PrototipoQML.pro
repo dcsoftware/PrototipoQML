@@ -50,6 +50,7 @@ HEADERS += \
     motors.h \
     xmlreaderwriter.h \
     values.h \
-    gpiopins.h
+    gpiopins.h \
+    debugutils.h
 
 DISTFILES +=

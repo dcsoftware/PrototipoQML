@@ -7,15 +7,20 @@
 #include <QtSerialPort>
 #include <QSerialPortInfo>
 #include <values.h>
+#include <xmlreaderwriter.h>
+#include <debugutils.h>
 
 
 #define SLAVE_ADDRESS 0x04
 
 static int degrees, attempt;
 static QByteArray dataOut, dataIn;
-static bool answer = false, firstStatus = false;
+static bool answer = false;
 static int dataBuffer;
 static long longBuffer;
+
+static QStringList posId, encoders, motors, steps;
+static int p[14], e[14], m[14], s[14];
 
 Encoder::Encoder() : serialPort(new QSerialPort(this))
 {
@@ -28,6 +33,17 @@ Encoder::Encoder() : serialPort(new QSerialPort(this))
 
     setSerialPort();
 
+    posId = XmlReaderWriter::getPositionArray();
+    encoders = XmlReaderWriter::getEncoderArray();
+    motors = XmlReaderWriter::getMotorsArray();
+    steps = XmlReaderWriter::getStepsArray();
+
+    for(int i = 0; i < 14; i++) {
+        p[i] = posId.at(i).toInt();
+        e[i] = encoders.at(i).toInt();
+        m[i] = motors.at(i).toInt();
+        s[i] = steps.at(i).toInt();
+    }
 }
 
 void Encoder::setSerialPort() {
@@ -316,7 +332,7 @@ void Encoder::moveMotor(int _motor, unsigned long _pos, int _dir)
     dataOut.resize(8);
 
     dataOut[0] = RPI_START;
-    dataOut[1] = MOVE;
+    dataOut[1] = GOTO_DIR;
     dataOut[2] = static_cast<char>(_motor);
     dataOut[3] = static_cast<char>((_pos >> 16));
     dataOut[4] = static_cast<char>((_pos >> 8));
@@ -325,8 +341,8 @@ void Encoder::moveMotor(int _motor, unsigned long _pos, int _dir)
     dataOut[7] = RPI_STOP;
 
     serialPort->write(dataOut);
-    serialPort->waitForBytesWritten(50);
-    serialPort->waitForReadyRead(50);
+    serialPort->waitForBytesWritten(30);
+    serialPort->waitForReadyRead(30);
 }
 
 void Encoder::setSoftStop(int _motor)
@@ -430,7 +446,7 @@ void Encoder::configFrequency(int _motor, int _param, int _getSet, int _mul, int
 
 void Encoder::startTimer()
 {
-    encTimer->start(50);
+    encTimer->start(4);
     qDebug() << "Starting encoder";
 }
 
@@ -449,8 +465,34 @@ void Encoder::encTimerSlot()
     }
 
     emit updateEncoder(degrees);
-    qDebug() << "Degrees: " << degrees;
-    switch(degrees)
+    //qDebug() << "Degrees: " << degrees;
+
+    QString deg = QString::number(degrees);
+
+    for(int i = 0; i < 14; i++){
+        if(e[i] == degrees) {
+
+        }
+    }
+
+
+    if(encoders.contains(deg)) {
+        int c = encoders.count(deg);
+        if(c > 1) {
+            int i1 = encoders.indexOf(deg);
+            int i2 = encoders.lastIndexOf(deg);
+            moveMotor(motors.at(i2).toInt(), steps.at(i2).toULong(), 0x01);
+            qDebug() << "POS ID " << posId.at(i1) << "GRADI " << deg << ", MOTORE " << motors.at(i1) << ", STEPS " << steps.at(i1);
+            moveMotor(motors.at(i1).toInt(), steps.at(i1).toULong(), 0x01);
+            qDebug() << "POS ID " << posId.at(i2) << "GRADI " << deg << ", MOTORE " << motors.at(i2) << ", STEPS " << steps.at(i2);
+        } else if(c == 1) {
+            int i0 = encoders.indexOf(deg);
+            qDebug() << "POS ID " << posId.at(i0) << "GRADI " << deg << ", MOTORE " << motors.at(i0) << ", STEPS " << steps.at(i0);
+            moveMotor(motors.at(i0).toInt(), steps.at(i0).toULong(), 0x01);
+        }
+    }
+
+    /*switch(degrees)
     {
     case 20:
         qDebug() << "Degrees: 100 - DITO AVANTI";
@@ -484,9 +526,9 @@ void Encoder::encTimerSlot()
         //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, NASTRO);
     break;
     default:
-        qDebug() << "Default action encoder switch statement;";
+        //qDebug() << "Default action encoder switch statement;";
         break;
-    }
+    }*/
 }
 
 void Encoder::resetTimer()

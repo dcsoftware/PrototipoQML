@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<motors>
+    <motor id="0">
+        <positions>
+            <position id="0" encoder="5" steps="0"/>
+            <position id="1" encoder="110" steps="240"/>
+        </positions>
+    </motor>
+    <motor id="1">
+        <positions>
+            <position id="0" encoder="13" steps="0"/>
+            <position id="1" encoder="240" steps="347"/>
+        </positions>
+    </motor>
+    <motor id="2">
+        <positions>
+            <position id="0" encoder="13" steps="0"/>
+            <position id="1" encoder="240" steps="347"/>
+            <position id="2" encoder="315" steps="347"/>
+        </positions>
+    </motor>
+    <motor id="3">
+        <positions>
+            <position id="0" encoder="287" steps="0"/>
+            <position id="1" encoder="330" steps="347"/>
+            <position id="2" encoder="340" steps="347"/>
+        </positions>
+    </motor>
+    <motor id="4">
+        <positions>
+            <position id="0" encoder="90" steps="0"/>
+            <position id="1" encoder="197" steps="347"/>
+            <position id="2" encoder="270" steps="347"/>
+        </positions>
+    </motor>
+        <motor id="4">
+        <positions>
+            <position id="0" encoder="250" steps="0"/>
+        </positions>
+    </motor>
+</motors>

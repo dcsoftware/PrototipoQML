@@ -9,6 +9,11 @@ static QDomDocument doc;
 static QDomElement root;
 static QDomNodeList phases;
 
+static QStringList _pos;
+static QStringList _enc;
+static QStringList _mot;
+static QStringList _steps;
+
 XmlReaderWriter::XmlReaderWriter()
 {
     qDebug() << "XmlReaderWriter run";
@@ -44,7 +49,11 @@ XmlReaderWriter::XmlReaderWriter()
         if(phaseNode.isElement()) {
             QDomElement phase = phaseNode.toElement();
             qDebug() << "ID: " << phase.attribute("id") << ", MOTOR " << phase.attribute("motor")
-                     << ", ENCODER " << phase.attribute("encoder") << ", PASSO " << phase.attribute("degrees");
+                     << ", ENCODER " << phase.attribute("encoder") << ", STEPS " << phase.attribute("steps");
+            _pos.append(phase.attribute("id"));
+            _mot.append(phase.attribute("motor"));
+            _enc.append(phase.attribute("encoder"));
+            _steps.append(phase.attribute("steps"));
         }
     }
 }
@@ -65,7 +74,7 @@ void XmlReaderWriter::readElements(QDomElement _root, QString _tag)
         if(n.isElement()) {
             QDomElement m = n.toElement();
             pos[i] = m.attribute("encoder");
-            degrees[i] = m.attribute("degrees");
+            degrees[i] = m.attribute("steps");
 
             qDebug() << "Position " << i << ", gradi encoder: " << pos[i] << ", passo: " << degrees[i];
         }
@@ -75,4 +84,20 @@ void XmlReaderWriter::readElements(QDomElement _root, QString _tag)
 void XmlReaderWriter::writeDoc()
 {
 
+}
+
+QStringList XmlReaderWriter::getPositionArray() {
+    return _pos;
+}
+
+QStringList XmlReaderWriter::getEncoderArray() {
+    return _enc;
+}
+
+QStringList XmlReaderWriter::getMotorsArray() {
+    return _mot;
+}
+
+QStringList XmlReaderWriter::getStepsArray() {
+    return _steps;
 }

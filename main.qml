@@ -430,11 +430,18 @@ Window {
         }
 
         Pane {
+            property bool firstRun: false
             id: ditoConfigPane
             z: 1
             anchors.fill: parent
             visible: false
-            onVisibleChanged: visible ? encoder.configParameter(0x00, 0x16, 0x01, 0x00) : null
+            Component.onCompleted: firstRun = true
+            onVisibleChanged: {
+                if(firstRun) {
+                    visible ? encoder.configParameter(0x00, 0x16, 0x01, 0x00) : null
+                    console.log("First run")
+                }
+            }
 
             Label {
                 id: ditoConfigPanelabel
@@ -463,9 +470,17 @@ Window {
                 id: stepCombo
                 x: 173
                 y: 45
-                height: 20
+                height: 35
                 model: stepComboModel
                 textRole: "display"
+                onCurrentIndexChanged: {
+                    if(ditoConfigPane.visible && !ditoConfigPane.firstRun) {
+                    console.log("Config step mode " + currentIndex)
+                    encoder.configParameter(0x00, 0x16, 0x00, currentIndex)
+                    }
+                    ditoConfigPane.firstRun = false
+                }
+
             }
 
             Label {
@@ -482,7 +497,8 @@ Window {
                 id: ocCombo
                 x: 173
                 y: 80
-                height: 20
+                height: 35
+                visible: true
                 model: ocdTHComboModel
                 textRole: "display"
             }
@@ -492,7 +508,9 @@ Window {
                 x: 653
                 y: 395
                 text: qsTr("CHIUDI")
-                onClicked: ditoConfigPane.visible = false
+                onClicked: {
+                    ditoConfigPane.visible = false
+                }
             }
 
         }
