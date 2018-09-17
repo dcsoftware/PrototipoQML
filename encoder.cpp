@@ -55,7 +55,7 @@ void Encoder::setSerialPort() {
         if(!info.portName().compare("ttyS0")) {
             qDebug() << "Setting serial port";
             serialPort->setPort(info);
-            serialPort->setBaudRate(QSerialPort::Baud9600);
+            serialPort->setBaudRate(QSerialPort::Baud57600);
             serialPort->setDataBits(QSerialPort::Data8);
             serialPort->setParity(QSerialPort::NoParity);
             serialPort->setStopBits(QSerialPort::OneStop);
@@ -74,10 +74,10 @@ void Encoder::serialDataReady()
 
     if(static_cast<int>(dataIn[l -1]) == ARDU_STOP) {
         qDebug() << "Reception Complete ";
-        for (int i = 0; i < dataIn.size(); i++) {
+        /*for (int i = 0; i < dataIn.size(); i++) {
             QString asHex = QString("%1").arg(static_cast<int>(dataIn[i]), 0, 16);
             qDebug() << asHex;
-        }
+        }*/
 
         decodeData(dataIn);
         dataIn.clear();
