@@ -12,6 +12,8 @@
 
 
 #define SLAVE_ADDRESS 0x04
+#define WAIT_DATA_READ 30
+#define WAIT_DATA_WRITE 30
 
 static int degrees, attempt;
 static QByteArray dataOut, dataIn;
@@ -19,8 +21,9 @@ static bool answer = false;
 static int dataBuffer;
 static long longBuffer;
 
-static QStringList posId, encoders, motors, steps;
-static int p[14], e[14], m[14], s[14];
+static QStringList posId, encoders, motors, steps, dir;
+static int p[14], e[14], m[14], d[14];
+static unsigned long s[14];
 
 Encoder::Encoder() : serialPort(new QSerialPort(this))
 {
@@ -37,12 +40,14 @@ Encoder::Encoder() : serialPort(new QSerialPort(this))
     encoders = XmlReaderWriter::getEncoderArray();
     motors = XmlReaderWriter::getMotorsArray();
     steps = XmlReaderWriter::getStepsArray();
+    dir = XmlReaderWriter::getDirArray();
 
     for(int i = 0; i < 14; i++) {
         p[i] = posId.at(i).toInt();
         e[i] = encoders.at(i).toInt();
         m[i] = motors.at(i).toInt();
-        s[i] = steps.at(i).toInt();
+        s[i] = steps.at(i).toULong();
+        d[i] = dir.at(i).toInt();
     }
 }
 
@@ -208,16 +213,18 @@ void Encoder::decodeData(QByteArray _data)
     }
 }
 
+void Encoder::setResetMotor(int _motor)
+{
+
+    getStatus(_motor);
+    QThread::msleep(100);
+    setSoftStop(_motor);
+    QThread::msleep(100);
+    setHomePos(_motor);
+}
+
 void Encoder::getStatus(int _motor)
 {
-    attempt = 0;
-    while(!serialPort->isOpen()){
-        setSerialPort();
-        if(attempt == 4)
-            break;
-        attempt++;
-    }
-
     dataOut.resize(4);
     dataOut[0] = RPI_START;
     dataOut[1] = GET_STATUS;
@@ -225,20 +232,26 @@ void Encoder::getStatus(int _motor)
     dataOut[3] = RPI_STOP;
 
     serialPort->write(dataOut);
-    serialPort->waitForBytesWritten(50);
-    serialPort->waitForReadyRead(50);
+    serialPort->waitForBytesWritten(WAIT_DATA_WRITE);
+    serialPort->waitForReadyRead(WAIT_DATA_READ);
+}
+
+void Encoder::setHomePos(int _motor)
+{
+    dataOut.resize(4);
+    dataOut[0] = RPI_START;
+    dataOut[1] = RESET_POS;
+    dataOut[2] = static_cast<char>(_motor);
+    dataOut[3] = RPI_STOP;
+
+    serialPort->write(dataOut);
+    serialPort->waitForBytesWritten(WAIT_DATA_WRITE);
+    serialPort->waitForReadyRead(WAIT_DATA_READ);
     answer = true;
 }
 
 void Encoder::getConfig(int _motor)
 {
-    attempt = 0;
-    while(!serialPort->isOpen()){
-        setSerialPort();
-        if(attempt == 4)
-            break;
-        attempt++;
-    }
     dataOut.resize(4);
     dataOut[0] = RPI_START;
     dataOut[1] = CONFIG;
@@ -246,20 +259,14 @@ void Encoder::getConfig(int _motor)
     dataOut[3] = RPI_STOP;
 
     serialPort->write(dataOut);
-    serialPort->waitForBytesWritten(50);
-    serialPort->waitForReadyRead(50);
+    serialPort->waitForBytesWritten(WAIT_DATA_WRITE);
+    serialPort->waitForReadyRead(WAIT_DATA_READ);
     answer = true;
 }
 
 void Encoder::getPosition(int _motor)
 {
-    attempt = 0;
-    while(!serialPort->isOpen()){
-        setSerialPort();
-        if(attempt == 4)
-            break;
-        attempt++;
-    }
+
     dataOut.resize(4);
     dataOut[0] = RPI_START;
     dataOut[1] = ABS_POS;
@@ -267,20 +274,12 @@ void Encoder::getPosition(int _motor)
     dataOut[3] = RPI_STOP;
 
     serialPort->write(dataOut);
-    serialPort->waitForBytesWritten(50);
-    serialPort->waitForReadyRead(50);
+    serialPort->waitForBytesWritten(WAIT_DATA_WRITE);
+    serialPort->waitForReadyRead(WAIT_DATA_READ);
 }
 
 void Encoder::getParam(int _motor, int _param)
 {
-    attempt = 0;
-    while(!serialPort->isOpen()){
-        setSerialPort();
-        if(attempt == 4)
-            break;
-        attempt++;
-    }
-
     dataOut.resize(5);
 
     dataOut[0] = RPI_START;
@@ -290,20 +289,12 @@ void Encoder::getParam(int _motor, int _param)
     dataOut[4] = RPI_STOP;
 
     serialPort->write(dataOut);
-    serialPort->waitForBytesWritten(50);
-    serialPort->waitForReadyRead(50);
+    serialPort->waitForBytesWritten(WAIT_DATA_WRITE);
+    serialPort->waitForReadyRead(WAIT_DATA_READ);
 }
 
 void Encoder::setParam(int _motor, int _param)
 {
-    attempt = 0;
-    while(!serialPort->isOpen()){
-        setSerialPort();
-        if(attempt == 4)
-            break;
-        attempt++;
-    }
-
     dataOut.resize(5);
 
     dataOut[0] = RPI_START;
@@ -313,20 +304,12 @@ void Encoder::setParam(int _motor, int _param)
     dataOut[4] = RPI_STOP;
 
     serialPort->write(dataOut);
-    serialPort->waitForBytesWritten(50);
-    serialPort->waitForReadyRead(50);
+    serialPort->waitForBytesWritten(WAIT_DATA_WRITE);
+    serialPort->waitForReadyRead(WAIT_DATA_READ);
 }
 
 void Encoder::moveMotor(int _motor, unsigned long _pos, int _dir)
 {
-    attempt = 0;
-    while(!serialPort->isOpen()){
-        setSerialPort();
-        if(attempt == 4)
-            break;
-        attempt++;
-    }
-
     qDebug() << "Received MOVE command";
 
     dataOut.resize(8);
@@ -341,20 +324,13 @@ void Encoder::moveMotor(int _motor, unsigned long _pos, int _dir)
     dataOut[7] = RPI_STOP;
 
     serialPort->write(dataOut);
-    serialPort->waitForBytesWritten(30);
-    serialPort->waitForReadyRead(30);
+    serialPort->waitForBytesWritten(WAIT_DATA_WRITE);
+    serialPort->waitForReadyRead(WAIT_DATA_READ);
 }
 
 void Encoder::setSoftStop(int _motor)
 {
-    attempt = 0;
-    while(!serialPort->isOpen()){
-        setSerialPort();
-        if(attempt == 4)
-            break;
-        attempt++;
-    }
-
+    qDebug() << "SOFT STOP";
     dataOut.resize(4);
     dataOut[0] = RPI_START;
     dataOut[1] = SOFT_STOP;
@@ -362,20 +338,12 @@ void Encoder::setSoftStop(int _motor)
     dataOut[3] = RPI_STOP;
 
     serialPort->write(dataOut);
-    serialPort->waitForBytesWritten(50);
-    serialPort->waitForReadyRead(50);
+    serialPort->waitForBytesWritten(WAIT_DATA_WRITE);
+    serialPort->waitForReadyRead(WAIT_DATA_READ);
 }
 
 void Encoder::configParameter(int _motor, int _param, int _getSet, int _data)
 {
-    attempt = 0;
-    while(!serialPort->isOpen()){
-        setSerialPort();
-        if(attempt == 4)
-            break;
-        attempt++;
-    }
-
     dataOut.resize(6);
 
     dataOut[0] = RPI_START;
@@ -386,21 +354,13 @@ void Encoder::configParameter(int _motor, int _param, int _getSet, int _data)
     dataOut[5] = RPI_STOP;
 
     serialPort->write(dataOut);
-    serialPort->waitForBytesWritten(50);
-    serialPort->waitForReadyRead(50);
+    serialPort->waitForBytesWritten(WAIT_DATA_WRITE);
+    serialPort->waitForReadyRead(WAIT_DATA_READ);
     answer = true;
 }
 
 void Encoder::configSpeed(int _motor, int _param, int _getSet, unsigned long _data)
 {
-    attempt = 0;
-    while(!serialPort->isOpen()){
-        setSerialPort();
-        if(attempt == 4)
-            break;
-        attempt++;
-    }
-
     dataOut.resize(8);
 
     dataOut[0] = RPI_START;
@@ -413,21 +373,13 @@ void Encoder::configSpeed(int _motor, int _param, int _getSet, unsigned long _da
     dataOut[7] = RPI_STOP;
 
     serialPort->write(dataOut);
-    serialPort->waitForBytesWritten(50);
-    serialPort->waitForReadyRead(50);
+    serialPort->waitForBytesWritten(WAIT_DATA_WRITE);
+    serialPort->waitForReadyRead(WAIT_DATA_READ);
     answer = true;
 }
 
 void Encoder::configFrequency(int _motor, int _param, int _getSet, int _mul, int _div)
 {
-    attempt = 0;
-    while(!serialPort->isOpen()){
-        setSerialPort();
-        if(attempt == 4)
-            break;
-        attempt++;
-    }
-
     dataOut.resize(7);
 
     dataOut[0] = RPI_START;
@@ -439,14 +391,14 @@ void Encoder::configFrequency(int _motor, int _param, int _getSet, int _mul, int
     dataOut[6] = RPI_STOP;
 
     serialPort->write(dataOut);
-    serialPort->waitForBytesWritten(50);
-    serialPort->waitForReadyRead(50);
+    serialPort->waitForBytesWritten(WAIT_DATA_WRITE);
+    serialPort->waitForReadyRead(WAIT_DATA_READ);
     answer = true;
 }
 
 void Encoder::startTimer()
 {
-    encTimer->start(4);
+    encTimer->start(2);
     qDebug() << "Starting encoder";
 }
 
@@ -470,13 +422,14 @@ void Encoder::encTimerSlot()
     QString deg = QString::number(degrees);
 
     for(int i = 0; i < 14; i++){
-        if(e[i] == degrees) {
-
+        if(degrees == e[i])
+        {
+            qDebug() << "POS ID " << p[i] << "GRADI " << deg << ", MOTORE " << m[i] << ", STEPS " << s[i] << ", DIR " << d[i];
+            moveMotor(m[i], s[i], d[i]);
         }
     }
 
-
-    if(encoders.contains(deg)) {
+    /*if(encoders.contains(deg)) {
         int c = encoders.count(deg);
         if(c > 1) {
             int i1 = encoders.indexOf(deg);
@@ -490,7 +443,7 @@ void Encoder::encTimerSlot()
             qDebug() << "POS ID " << posId.at(i0) << "GRADI " << deg << ", MOTORE " << motors.at(i0) << ", STEPS " << steps.at(i0);
             moveMotor(motors.at(i0).toInt(), steps.at(i0).toULong(), 0x01);
         }
-    }
+    }*/
 
     /*switch(degrees)
     {

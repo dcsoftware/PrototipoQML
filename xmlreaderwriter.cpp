@@ -13,6 +13,7 @@ static QStringList _pos;
 static QStringList _enc;
 static QStringList _mot;
 static QStringList _steps;
+static QStringList _dir;
 
 XmlReaderWriter::XmlReaderWriter()
 {
@@ -54,6 +55,7 @@ XmlReaderWriter::XmlReaderWriter()
             _mot.append(phase.attribute("motor"));
             _enc.append(phase.attribute("encoder"));
             _steps.append(phase.attribute("steps"));
+            _dir.append(phase.attribute("dir"));
         }
     }
 }
@@ -100,4 +102,8 @@ QStringList XmlReaderWriter::getMotorsArray() {
 
 QStringList XmlReaderWriter::getStepsArray() {
     return _steps;
+}
+
+QStringList XmlReaderWriter::getDirArray() {
+    return _dir;
 }

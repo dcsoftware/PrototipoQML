@@ -22,6 +22,7 @@ public:
     static QStringList getEncoderArray();
     static QStringList getMotorsArray();
     static QStringList getStepsArray();
+    static QStringList getDirArray();
 
 public slots:
 

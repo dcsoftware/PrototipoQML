@@ -110,7 +110,10 @@ Window {
             }
             startEncButton.enabled = (ditoSButton.enabled && corpoSButton.enabled && manineSButton.enabled)
             stopEncButton.enabled = (ditoSButton.enabled && corpoSButton.enabled && manineSButton.enabled)
-            encoder.setSoftStop(0xAB)
+            if(ditoSButton.enabled && corpoSButton.enabled && manineSButton.enabled)
+            {
+                //encoder.setSoftStop(0xAB)
+            }
         }
 
         onStepModeUpdated: {
@@ -166,7 +169,9 @@ Window {
             anchors.fill: parent
             Component.onCompleted: {
                 console.log("GetStatus Call")
-                encoder.getStatus(0xAB);
+                //encoder.getStatus(0xAB);
+                //encoder.setHomePos(0xAB)
+                encoder.setResetMotor(0xAB)
             }
 
             Button {
@@ -234,7 +239,8 @@ Window {
                 font.pointSize: 20
                 onClicked: {
                     encoder.resetTimer();
-                    encoder.getStatus(0xAB)
+                    //encoder.getStatus(0xAB)
+                    encoder.setResetMotor(0xAB)
                 }
             }
 
@@ -528,7 +534,7 @@ Window {
             anchors.fill: parent
             visible: false
 
-            onVisibleChanged: i2ccom.getAllPosition()
+            //onVisibleChanged: i2ccom.getAllPosition()
 
             TextField {
                 id: encoderText2
