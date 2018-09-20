@@ -41,6 +41,14 @@ XmlReaderWriter::XmlReaderWriter()
            qDebug() << errMsg;
     }
 
+    readElements();
+
+    file.close();
+
+}
+
+void XmlReaderWriter::readElements()
+{
     root = doc.firstChildElement();
 
     phases = root.elementsByTagName("position");
@@ -60,32 +68,83 @@ XmlReaderWriter::XmlReaderWriter()
     }
 }
 
-void XmlReaderWriter::readElements(QDomElement _root, QString _tag)
+void XmlReaderWriter::updateElement(int _id, int _degrees, unsigned long _ste)
 {
-    QString _id = _root.attribute("id");
-    QString _name = _root.attribute("name");
+    QFile file("/home/pi/motorsnew.xml");
 
-    qDebug() << "Motor id = " << _id << ", Name: " << _name;
+    if (!file.open(QFile::ReadWrite) || !doc.setContent(&file)) {
+        qDebug() << "Failed to open file";
+    }
 
-    QDomNodeList nodes = _root.elementsByTagName(_tag);
-    QString pos[nodes.count()];
-    QString degrees[nodes.count()];
+    root = doc.firstChildElement();
 
-    for(int i = 0; i < nodes.count(); i++) {
-        QDomNode n = nodes.at(i);
-        if(n.isElement()) {
-            QDomElement m = n.toElement();
-            pos[i] = m.attribute("encoder");
-            degrees[i] = m.attribute("steps");
+    phases = root.elementsByTagName("position");
+    QDomNode phaseNode = phases.at(_id);
+    if(phaseNode.isElement()) {
+        QDomElement phase = phaseNode.toElement();
+        qDebug() << "ID: " << phase.attribute("id") << ", MOTOR " << phase.attribute("motor")
+                 << ", ENCODER " << phase.attribute("encoder") << ", STEPS " << phase.attribute("steps");
+        phase.setAttribute("encoder", QString(_degrees));
+        phase.setAttribute("steps", QString::number(_ste));
 
-            qDebug() << "Position " << i << ", gradi encoder: " << pos[i] << ", passo: " << degrees[i];
-        }
+        file.resize(0);
+        QTextStream stream;
+        stream.setDevice(&file);
+        doc.save(stream, 0);
+        file.close();
     }
 }
 
-void XmlReaderWriter::writeDoc()
-{
+void XmlReaderWriter::updateEncoderPhase(int _id, int _degrees) {
+    QFile file("/home/pi/motorsnew.xml");
 
+    if (!file.open(QFile::ReadWrite) || !doc.setContent(&file)) {
+        qDebug() << "Failed to open file";
+    }
+
+    root = doc.firstChildElement();
+
+    phases = root.elementsByTagName("position");
+    QDomNode phaseNode = phases.at(_id);
+    if(phaseNode.isElement()) {
+        QDomElement phase = phaseNode.toElement();
+        qDebug() << "ID: " << phase.attribute("id") << ", MOTOR " << phase.attribute("motor")
+                 << ", ENCODER " << phase.attribute("encoder") << ", STEPS " << phase.attribute("steps");
+        phase.setAttribute("encoder", QString(_degrees));
+        qDebug() << "UPDATE ID: " << phase.attribute("id") << ", MOTOR " << phase.attribute("motor")
+                 << ", ENCODER " << phase.attribute("encoder") << ", STEPS " << phase.attribute("steps");
+        file.resize(0);
+        QTextStream stream;
+        stream.setDevice(&file);
+        doc.save(stream, 0);
+        file.close();
+    }
+}
+
+void XmlReaderWriter::updateStepPhase(int _id, unsigned long _ste) {
+    QFile file("/home/pi/motorsnew.xml");
+
+    if (!file.open(QFile::ReadWrite) || !doc.setContent(&file)) {
+        qDebug() << "Failed to open file";
+    }
+
+    root = doc.firstChildElement();
+
+    phases = root.elementsByTagName("position");
+    QDomNode phaseNode = phases.at(_id);
+    if(phaseNode.isElement()) {
+        QDomElement phase = phaseNode.toElement();
+        qDebug() << "ID: " << phase.attribute("id") << ", MOTOR " << phase.attribute("motor")
+                 << ", ENCODER " << phase.attribute("encoder") << ", STEPS " << phase.attribute("steps");
+        phase.setAttribute("steps", QString::number(_ste));
+        qDebug() << "UPDATE ID: " << phase.attribute("id") << ", MOTOR " << phase.attribute("motor")
+                 << ", ENCODER " << phase.attribute("encoder") << ", STEPS " << phase.attribute("steps");
+        file.resize(0);
+        QTextStream stream;
+        stream.setDevice(&file);
+        doc.save(stream, 0);
+        file.close();
+    }
 }
 
 QStringList XmlReaderWriter::getPositionArray() {

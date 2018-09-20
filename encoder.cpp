@@ -36,6 +36,11 @@ Encoder::Encoder() : serialPort(new QSerialPort(this))
 
     setSerialPort();
 
+    getPhasesData();
+}
+
+void Encoder::getPhasesData()
+{
     posId = XmlReaderWriter::getPositionArray();
     encoders = XmlReaderWriter::getEncoderArray();
     motors = XmlReaderWriter::getMotorsArray();
@@ -308,7 +313,27 @@ void Encoder::setParam(int _motor, int _param)
     serialPort->waitForReadyRead(WAIT_DATA_READ);
 }
 
-void Encoder::moveMotor(int _motor, unsigned long _pos, int _dir)
+void Encoder::moveCommand(int _motor, unsigned long _steps, int _dir)
+{
+    qDebug() << "Received MOVE command";
+
+    dataOut.resize(8);
+
+    dataOut[0] = RPI_START;
+    dataOut[1] = MOVE;
+    dataOut[2] = static_cast<char>(_motor);
+    dataOut[3] = static_cast<char>((_steps >> 16));
+    dataOut[4] = static_cast<char>((_steps >> 8));
+    dataOut[5] = static_cast<char>(_steps);
+    dataOut[6] = static_cast<char>(_dir);
+    dataOut[7] = RPI_STOP;
+
+    serialPort->write(dataOut);
+    serialPort->waitForBytesWritten(WAIT_DATA_WRITE);
+    serialPort->waitForReadyRead(WAIT_DATA_READ);
+}
+
+void Encoder::goToCommand(int _motor, unsigned long _pos, int _dir)
 {
     qDebug() << "Received MOVE command";
 
@@ -425,7 +450,10 @@ void Encoder::encTimerSlot()
         if(degrees == e[i])
         {
             qDebug() << "POS ID " << p[i] << "GRADI " << deg << ", MOTORE " << m[i] << ", STEPS " << s[i] << ", DIR " << d[i];
-            moveMotor(m[i], s[i], d[i]);
+            if(m[i] != 0x05)
+                goToCommand(m[i], s[i], d[i]);
+            else if(m[i] == 0x05)
+                moveCommand(m[i], s[i], d[i]);
         }
     }
 
@@ -443,44 +471,6 @@ void Encoder::encTimerSlot()
             qDebug() << "POS ID " << posId.at(i0) << "GRADI " << deg << ", MOTORE " << motors.at(i0) << ", STEPS " << steps.at(i0);
             moveMotor(motors.at(i0).toInt(), steps.at(i0).toULong(), 0x01);
         }
-    }*/
-
-    /*switch(degrees)
-    {
-    case 20:
-        qDebug() << "Degrees: 100 - DITO AVANTI";
-
-        moveMotor(0x00, 1000, 1);
-        //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, DITO);
-    break;
-    case 50:
-        qDebug() << "Degrees: 200 - DITO BACK";
-        moveMotor(0x00, 1000, 0);
-        //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, LUNETTA);
-        break;
-    case 100:
-        qDebug() << "Encoder: 300 - NASTRO MOVE";
-        moveMotor(0x01, 500, 1);
-        //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, NASTRO);
-    break;
-    case 130:
-        qDebug() << "Encoder: 300 - NASTRO MOVE";
-        moveMotor(0x01, 500, 0);
-        //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, NASTRO);
-    break;
-    case 180:
-        qDebug() << "Encoder: 300 - NASTRO MOVE";
-        moveMotor(0x02, 1000, 1);
-        //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, NASTRO);
-    break;
-    case 210:
-        qDebug() << "Encoder: 300 - NASTRO MOVE";
-        moveMotor(0x02, 1000, 0);
-        //wiringPiI2CWriteReg8(i2c_slave, I2C_SET_MOTOR, NASTRO);
-    break;
-    default:
-        //qDebug() << "Default action encoder switch statement;";
-        break;
     }*/
 }
 

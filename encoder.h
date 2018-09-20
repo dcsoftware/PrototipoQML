@@ -19,6 +19,7 @@ public:
 
 
 public slots:
+    void getPhasesData();
     void encTimerSlot();
     void startTimer();
     void stopTimer();
@@ -32,7 +33,8 @@ public slots:
     void setParam(int _motor, int _param);
     void getParam(int _motor, int _param);
     void setSoftStop(int _motor);
-    void moveMotor(int _motor, unsigned long _pos, int _dir);
+    void moveCommand(int _motor, unsigned long _pos, int _dir);
+    void goToCommand(int _motor, unsigned long _pos, int _dir);
     void configParameter(int _motor, int _param, int _getSet, int data);
     void configSpeed(int _motor, int _param, int _getSet, unsigned long _data);
     void configFrequency(int _motor, int _param, int _getSet, int _mul, int _div);

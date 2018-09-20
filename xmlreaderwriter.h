@@ -16,8 +16,10 @@ class XmlReaderWriter : public QObject
 public:
     XmlReaderWriter();
 
-    void readElements(QDomElement _root, QString _tag);
-    void writeDoc();
+    void readElements();
+    void updateElement(int _id, int _degrees, unsigned long _ste);
+    void updateEncoderPhase(int _id, int _degrees);
+    void updateStepPhase(int _id, unsigned long _ste);
     static QStringList getPositionArray();
     static QStringList getEncoderArray();
     static QStringList getMotorsArray();

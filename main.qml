@@ -254,7 +254,10 @@ Window {
                 hoverEnabled: false
                 //enabled: false
                 //palette.button: "yellow"
-                onClicked: ditoConfigPane.visible = true//encoder.getStatus(0x00)
+                onClicked: {
+                    ditoConfigPane.z = 1
+                    ditoConfigPane.visible = true
+                }
             }
 
             Label {
@@ -401,8 +404,10 @@ Window {
                 text: qsTr("MANUALE")
                 anchors.right: parent.right
                 anchors.rightMargin: 20
-                onClicked: manualPane.visible = true
-
+                onClicked: {
+                    manualPane.visible = true
+                    manualPane.z = 1
+                }
             }
 
             Button {
@@ -438,7 +443,7 @@ Window {
         Pane {
             property bool firstRun: false
             id: ditoConfigPane
-            z: 1
+            z: 0
             anchors.fill: parent
             visible: false
             Component.onCompleted: firstRun = true
@@ -513,9 +518,10 @@ Window {
                 id: ditoConfigCloseButton
                 x: 653
                 y: 395
-                text: qsTr("CHIUDI")
+                text: qsTr("SALVA")
                 onClicked: {
                     ditoConfigPane.visible = false
+                    ditoConfigPane.z = 0
                 }
             }
 
@@ -533,8 +539,10 @@ Window {
             z: 0
             anchors.fill: parent
             visible: false
-
-            //onVisibleChanged: i2ccom.getAllPosition()
+            onVisibleChanged: {
+                if(visible)
+                    encoder.getPosition(0xAB)
+            }
 
             TextField {
                 id: encoderText2
@@ -900,7 +908,10 @@ Window {
                 y: 417
                 height: 42
                 text: qsTr("CHIUDI")
-                onClicked: manualPane.visible = false;
+                onClicked: {
+                    manualPane.z = 0
+                    manualPane.visible = false;
+                }
             }
         }
     }
