@@ -26,6 +26,7 @@ public slots:
     void resetTimer();
     void serialDataReady();
     void setResetMotor(int _motor);
+    void goToManual(int _posId);
     void getStatus(int _motor);
     void setHomePos(int _motor);
     void getConfig(int _motor);

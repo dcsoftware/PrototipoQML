@@ -83,7 +83,7 @@ void Encoder::serialDataReady()
     int l = dataIn.size();
 
     if(static_cast<int>(dataIn[l -1]) == ARDU_STOP) {
-        qDebug() << "Reception Complete ";
+        //qDebug() << "Reception Complete ";
         /*for (int i = 0; i < dataIn.size(); i++) {
             QString asHex = QString("%1").arg(static_cast<int>(dataIn[i]), 0, 16);
             qDebug() << asHex;
@@ -117,12 +117,12 @@ void Encoder::decodeData(QByteArray _data)
                 qDebug() << "All motor status, length: " << _data.size();
                 for(int i = 0; i < NUM_BOARDS; i++) {
                     dataBuffer = static_cast<int>((_data[i*3+4] << 8)) | static_cast<int>(_data[i*3+5]);
-                    qDebug() << "Motor " << _data[i*3+3] << " status: " << dataBuffer;
+                    //qDebug() << "Motor " << _data[i*3+3] << " status: " << dataBuffer;
                     emit statusUpdated(_data[i*3+3], (dataBuffer == 0x00) ? false : true);
                 }
             } else {
                 dataBuffer = static_cast<int>((_data[MOTOR_NUM + 1] << 8)) | static_cast<int>(_data[MOTOR_NUM + 2]);
-                qDebug() << "Motor " << motor << " status: " << dataBuffer;
+                //qDebug() << "Motor " << motor << " status: " << dataBuffer;
                 emit statusUpdated(motor, (dataBuffer == 0x00) ? false : true);
             }
             break;
@@ -228,6 +228,11 @@ void Encoder::setResetMotor(int _motor)
     setHomePos(_motor);
 }
 
+void Encoder::goToManual(int _posId)
+{
+
+}
+
 void Encoder::getStatus(int _motor)
 {
     dataOut.resize(4);
@@ -315,8 +320,6 @@ void Encoder::setParam(int _motor, int _param)
 
 void Encoder::moveCommand(int _motor, unsigned long _steps, int _dir)
 {
-    qDebug() << "Received MOVE command";
-
     dataOut.resize(8);
 
     dataOut[0] = RPI_START;
@@ -335,8 +338,6 @@ void Encoder::moveCommand(int _motor, unsigned long _steps, int _dir)
 
 void Encoder::goToCommand(int _motor, unsigned long _pos, int _dir)
 {
-    qDebug() << "Received MOVE command";
-
     dataOut.resize(8);
 
     dataOut[0] = RPI_START;
@@ -355,7 +356,6 @@ void Encoder::goToCommand(int _motor, unsigned long _pos, int _dir)
 
 void Encoder::setSoftStop(int _motor)
 {
-    qDebug() << "SOFT STOP";
     dataOut.resize(4);
     dataOut[0] = RPI_START;
     dataOut[1] = SOFT_STOP;
@@ -423,7 +423,7 @@ void Encoder::configFrequency(int _motor, int _param, int _getSet, int _mul, int
 
 void Encoder::startTimer()
 {
-    encTimer->start(2);
+    encTimer->start(1);
     qDebug() << "Starting encoder";
 }
 
@@ -449,7 +449,7 @@ void Encoder::encTimerSlot()
     for(int i = 0; i < 14; i++){
         if(degrees == e[i])
         {
-            qDebug() << "POS ID " << p[i] << "GRADI " << deg << ", MOTORE " << m[i] << ", STEPS " << s[i] << ", DIR " << d[i];
+            //qDebug() << "POS ID " << p[i] << "GRADI " << deg << ", MOTORE " << m[i] << ", STEPS " << s[i] << ", DIR " << d[i];
             if(m[i] != 0x05)
                 goToCommand(m[i], s[i], d[i]);
             else if(m[i] == 0x05)

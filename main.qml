@@ -77,29 +77,22 @@ Window {
                 _status ? ditoSButton.palette.button = "green" : ditoSButton.palette.button = "red"
                 _status ? ditoSButton.enabled = true : ditoSButton.enabled = false;
                 _status ? ditoPos1Button.enabled = true : ditoPos1Button.enabled = false
-                _status ? ditoPos2Button.enabled = true : ditoPos2Button.enabled = false
                 break;
             case 0x01:
                 _status ? corpoSButton.palette.button = "green" : corpoSButton.palette.button = "red"
                 _status ? corpoSButton.enabled = true : corpoSButton.enabled = false;
-                _status ? corpoPos1Button.enabled = true : corpoPos1Button.enabled = false
-                _status ? corpoPos1Button.enabled = true : corpoPos1Button.enabled = false
                 break;
             case 0x02:
                 _status ? manineSButton.palette.button = "green" : manineSButton.palette.button = "red"
                 _status ? manineSButton.enabled = true : manineSButton.enabled = false;
-                _status ? maninePos1Button.enabled = true : maninePos1Button.enabled = false
-                _status ? maninePos1Button.enabled = true : maninePos1Button.enabled = false
                 break;
             case 0x03:
                 _status ? chiusuraSButton.palette.button = "green" : chiusuraSButton.palette.button = "red"
                 _status ? chiusuraSButton.enabled = true : chiusuraSButton.enabled = false;
-                _status ? chiusuraPos1Button.enabled = true : chiusuraPos1Button.enabled = false
                 break;
             case 0x04:
                 _status ? lunettaSButton.palette.button = "green" : lunettaSButton.palette.button = "red"
                 _status ? lunettaSButton.enabled = true : lunettaSButton.enabled = false;
-                _status ? lunettaPos1Button.enabled = true : lunettaPos1Button.enabled = false
                 break;
             case 0x05:
                 _status ? nastroSButton.palette.button = "green" : nastroSButton.palette.button = "red"
@@ -536,7 +529,7 @@ Window {
 
         Pane {
             id: manualPane
-            z: 0
+            z: -1
             anchors.fill: parent
             visible: false
             onVisibleChanged: {
@@ -580,22 +573,14 @@ Window {
                     width: 80
                     height: 30
                     text: qsTr("POS 1")
+                    checkable: true
                     highlighted: false
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right
                     anchors.rightMargin: 320
-                }
-
-                Button {
-                    id: ditoPos2Button
-                    y: 2
-                    width: 80
-                    height: 30
-                    text: qsTr("POS 2")
-                    anchors.left: ditoPos1Button.right
-                    anchors.leftMargin: 40
-                    anchors.verticalCenter: parent.verticalCenter
-                    transformOrigin: Item.Center
+                    onClicked: {
+                        checked ? encoder.goToManual(0x04) : encoder.goToManual(0x00)
+                    }
                 }
 
                 Label {
@@ -603,8 +588,8 @@ Window {
                     width: 150
                     height: 30
                     text: qsTr("Posizione:")
-                    anchors.left: ditoPos2Button.right
-                    anchors.leftMargin: 40
+                    anchors.left: ditoPos1Button.right
+                    anchors.leftMargin: 160
                     anchors.verticalCenter: parent.verticalCenter
                     font.pointSize: 14
                     verticalAlignment: Text.AlignVCenter
@@ -637,22 +622,12 @@ Window {
                     width: 80
                     height: 30
                     text: qsTr("POS 1")
+                    enabled: false
+                    checkable: true
                     anchors.verticalCenter: parent.verticalCenter
                     transformOrigin: Item.Center
                     anchors.rightMargin: 320
                     anchors.right: parent.right
-                }
-
-                Button {
-                    id: corpoPos2Button
-                    y: 2
-                    width: 80
-                    height: 30
-                    text: qsTr("POS 2")
-                    anchors.left: corpoPos1Button.right
-                    anchors.leftMargin: 40
-                    anchors.verticalCenter: parent.verticalCenter
-                    transformOrigin: Item.Center
                 }
 
                 Label {
@@ -661,11 +636,11 @@ Window {
                     height: 30
                     text: qsTr("Posizione:")
                     anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: corpoPos2Button.right
+                    anchors.left: corpoPos1Button.right
                     font.pointSize: 14
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignLeft
-                    anchors.leftMargin: 40
+                    anchors.leftMargin: 160
                 }
                 spacing: 2
             }
@@ -695,6 +670,8 @@ Window {
                     width: 80
                     height: 30
                     text: qsTr("POS 1")
+                    checkable: true
+                    enabled: false
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.rightMargin: 320
                     transformOrigin: Item.Center
@@ -707,6 +684,8 @@ Window {
                     width: 80
                     height: 30
                     text: qsTr("POS 2")
+                    enabled: false
+                    checkable: true
                     anchors.left: maninePos1Button.right
                     anchors.leftMargin: 40
                     anchors.verticalCenter: parent.verticalCenter
@@ -753,6 +732,8 @@ Window {
                     width: 80
                     height: 30
                     text: qsTr("POS 1")
+                    enabled: false
+                    checkable: true
                     anchors.verticalCenter: parent.verticalCenter
                     transformOrigin: Item.Center
                     anchors.rightMargin: 320
@@ -765,6 +746,8 @@ Window {
                     width: 80
                     height: 30
                     text: qsTr("POS 2")
+                    enabled: false
+                    checkable: true
                     anchors.left: chiusuraPos1Button.right
                     anchors.leftMargin: 40
                     anchors.verticalCenter: parent.verticalCenter
@@ -811,6 +794,8 @@ Window {
                     width: 80
                     height: 30
                     text: qsTr("POS 1")
+                    enabled: false
+                    checkable: true
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.rightMargin: 320
                     transformOrigin: Item.Center
@@ -823,6 +808,8 @@ Window {
                     width: 80
                     height: 30
                     text: qsTr("POS 2")
+                    enabled: false
+                    checkable: true
                     anchors.left: lunettaPos1Button.right
                     anchors.leftMargin: 40
                     anchors.verticalCenter: parent.verticalCenter
