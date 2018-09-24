@@ -10,7 +10,7 @@ class Encoder : public QObject
 {
     Q_OBJECT
 
-    QTimer *encTimer;
+    QTimer *encTimer, *posTimer;
 
 public:
     Encoder();
@@ -21,8 +21,11 @@ public:
 public slots:
     void getPhasesData();
     void encTimerSlot();
+    void posTimerSlot();
     void startTimer();
+    void startPosTimer();
     void stopTimer();
+    void stopPosTimer();
     void resetTimer();
     void serialDataReady();
     void setResetMotor(int _motor);
@@ -34,8 +37,8 @@ public slots:
     void setParam(int _motor, int _param);
     void getParam(int _motor, int _param);
     void setSoftStop(int _motor);
-    void moveCommand(int _motor, unsigned long _pos, int _dir);
-    void goToCommand(int _motor, unsigned long _pos, int _dir);
+    void moveCommand(int _motor, long _pos, int _dir);
+    void goToCommand(int _motor, long _pos, int _dir);
     void configParameter(int _motor, int _param, int _getSet, int data);
     void configSpeed(int _motor, int _param, int _getSet, unsigned long _data);
     void configFrequency(int _motor, int _param, int _getSet, int _mul, int _div);
@@ -48,7 +51,7 @@ signals:
     void readSerialData();
     void statusUpdated(int _motor, bool _status);
     void configUpdated(int _motor, int _config);
-    void posUpdated(int _motor, long _pos);
+    void posUpdated(int _motor, QString _pos);
     void stepModeUpdated(int _motor, int _data);
     void ocdThUpdated(int _motor, int _data);
     void ocdSDUpdated(int _motor, int _data);

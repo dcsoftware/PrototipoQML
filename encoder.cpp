@@ -9,6 +9,7 @@
 #include <values.h>
 #include <xmlreaderwriter.h>
 #include <debugutils.h>
+#include <wiringPi.h>
 
 
 #define SLAVE_ADDRESS 0x04
@@ -22,16 +23,18 @@ static int dataBuffer;
 static long longBuffer;
 
 static QStringList posId, encoders, motors, steps, dir;
-static int p[14], e[14], m[14], d[14];
-static unsigned long s[14];
+static int p[17], e[17], m[17], d[17];
+static long s[17];
 
 Encoder::Encoder() : serialPort(new QSerialPort(this))
 {
     qDebug() << "Encoder run";
     encTimer = new QTimer();
+    posTimer = new QTimer();
 
 
     connect(encTimer, SIGNAL(timeout()), this, SLOT(encTimerSlot()));
+    connect(posTimer, SIGNAL(timeout()), this, SLOT(posTimerSlot()));
     connect(serialPort, SIGNAL(readyRead()), this, SLOT(serialDataReady()));
 
     setSerialPort();
@@ -47,11 +50,11 @@ void Encoder::getPhasesData()
     steps = XmlReaderWriter::getStepsArray();
     dir = XmlReaderWriter::getDirArray();
 
-    for(int i = 0; i < 14; i++) {
+    for(int i = 0; i < 17; i++) {
         p[i] = posId.at(i).toInt();
         e[i] = encoders.at(i).toInt();
         m[i] = motors.at(i).toInt();
-        s[i] = steps.at(i).toULong();
+        s[i] = steps.at(i).toLong();
         d[i] = dir.at(i).toInt();
     }
 }
@@ -147,13 +150,13 @@ void Encoder::decodeData(QByteArray _data)
                 qDebug() << "All motor position, length: " << _data.size();
                 for(int i = 0; i < NUM_BOARDS; i++) {
                     longBuffer = static_cast<long>((_data[i*4+4] << 16)) | static_cast<long>((_data[i*4+5] << 8)) | static_cast<long>((_data[i*4+6]));
-                    qDebug() << "Motor " << _data[i*4+3] << " status: " << longBuffer;
-                    emit posUpdated(_data[i*4+3], longBuffer);
+                    qDebug() << "Motor " << _data[i*4+3] << " position: " << longBuffer;
+                    emit posUpdated(_data[i*4+3], QString::number(longBuffer));
                 }
             } else {
                 longBuffer = static_cast<long>((_data[MOTOR_NUM + 1] << 16)) | static_cast<long>((_data[MOTOR_NUM + 2] << 8)) | static_cast<long>(_data[MOTOR_NUM + 3]);
                 qDebug() << "Motor " << motor << " position: " << longBuffer;
-                emit posUpdated(motor, longBuffer);
+                emit posUpdated(motor, QString::number(longBuffer));
             }
             break;
         }
@@ -230,7 +233,9 @@ void Encoder::setResetMotor(int _motor)
 
 void Encoder::goToManual(int _posId)
 {
-
+    posTimer->stop();
+    goToCommand(m[_posId], s[_posId], d[_posId]);
+    //posTimer->start(300);
 }
 
 void Encoder::getStatus(int _motor)
@@ -283,9 +288,12 @@ void Encoder::getPosition(int _motor)
     dataOut[2] = static_cast<char>(_motor);
     dataOut[3] = RPI_STOP;
 
-    serialPort->write(dataOut);
-    serialPort->waitForBytesWritten(WAIT_DATA_WRITE);
-    serialPort->waitForReadyRead(WAIT_DATA_READ);
+    for(int i = 0; i < 3; i++) {
+        QThread::msleep(45);
+        serialPort->write(dataOut);
+        serialPort->waitForBytesWritten(WAIT_DATA_WRITE);
+        serialPort->waitForReadyRead(WAIT_DATA_READ);
+    }
 }
 
 void Encoder::getParam(int _motor, int _param)
@@ -318,7 +326,7 @@ void Encoder::setParam(int _motor, int _param)
     serialPort->waitForReadyRead(WAIT_DATA_READ);
 }
 
-void Encoder::moveCommand(int _motor, unsigned long _steps, int _dir)
+void Encoder::moveCommand(int _motor, long _steps, int _dir)
 {
     dataOut.resize(8);
 
@@ -336,7 +344,7 @@ void Encoder::moveCommand(int _motor, unsigned long _steps, int _dir)
     serialPort->waitForReadyRead(WAIT_DATA_READ);
 }
 
-void Encoder::goToCommand(int _motor, unsigned long _pos, int _dir)
+void Encoder::goToCommand(int _motor, long _pos, int _dir)
 {
     dataOut.resize(8);
 
@@ -427,10 +435,25 @@ void Encoder::startTimer()
     qDebug() << "Starting encoder";
 }
 
+void Encoder::startPosTimer()
+{
+    posTimer->start(300);
+}
+
 void Encoder::stopTimer()
 {
     encTimer->stop();
     qDebug() << "Stopping encoder";
+}
+
+void Encoder::stopPosTimer()
+{
+    posTimer->stop();
+}
+
+void Encoder::posTimerSlot()
+{
+    getPosition(ALL_MOTORS);
 }
 
 void Encoder::encTimerSlot()

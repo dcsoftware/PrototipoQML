@@ -68,9 +68,29 @@ Window {
         id: encoder
 
         onUpdateEncoder: encoderText.text = qsTr("ENCODER: " + degrees)
-        onClosePopup: {
-            //ditoSButton.palette.button = "green"
+        onPosUpdated: {
+            switch(_motor){
+            case 0x00:
+                ditoPosLabel.text = _pos
+                break;
+            case 0x01:
+                corpoPosLabel.text = _pos
+                break;
+            case 0x02:
+                maninePosLabel.text = _pos
+                break;
+            case 0x03:
+                chiusuraPosLabel.text = _pos
+                break;
+            case 0x04:
+                lunettaPosLabel.text = _pos
+                break;
+            case 0x05:
+                nastroPosLabel.text = _pos
+                break;
+            }
         }
+
         onStatusUpdated: {
             switch(_motor){
             case 0x00:
@@ -400,6 +420,7 @@ Window {
                 onClicked: {
                     manualPane.visible = true
                     manualPane.z = 1
+                    //encoder.startPosTimer()
                 }
             }
 
@@ -578,8 +599,9 @@ Window {
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right
                     anchors.rightMargin: 320
-                    onClicked: {
+                    onCheckedChanged: {
                         checked ? encoder.goToManual(0x04) : encoder.goToManual(0x00)
+                        encoder.getPosition(0xAB);
                     }
                 }
 
@@ -622,12 +644,16 @@ Window {
                     width: 80
                     height: 30
                     text: qsTr("POS 1")
-                    enabled: false
+                    enabled: ditoPos1Button.checked
                     checkable: true
                     anchors.verticalCenter: parent.verticalCenter
                     transformOrigin: Item.Center
                     anchors.rightMargin: 320
                     anchors.right: parent.right
+                    onCheckedChanged:  {
+                        checked ? encoder.goToManual(0x07) : encoder.goToManual(0x02)
+                        checked ? maninePos1Button.checked = true : maninePos1Button.checked = false
+                    }
                 }
 
                 Label {
@@ -676,6 +702,10 @@ Window {
                     anchors.rightMargin: 320
                     transformOrigin: Item.Center
                     anchors.right: parent.right
+                    onCheckedChanged:  {
+                        checked ? encoder.goToManual(0x06) : encoder.goToManual(0x1)
+                        encoder.getPosition(0xAB);
+                    }
                 }
 
                 Button {
@@ -684,12 +714,16 @@ Window {
                     width: 80
                     height: 30
                     text: qsTr("POS 2")
-                    enabled: false
+                    enabled: maninePos1Button.checked
                     checkable: true
                     anchors.left: maninePos1Button.right
                     anchors.leftMargin: 40
                     anchors.verticalCenter: parent.verticalCenter
                     transformOrigin: Item.Center
+                    onCheckedChanged:  {
+                        checked ? encoder.goToManual(11) : encoder.goToManual(14)
+                        encoder.getPosition(0xAB);
+                    }
                 }
 
                 Label {
@@ -732,12 +766,16 @@ Window {
                     width: 80
                     height: 30
                     text: qsTr("POS 1")
-                    enabled: false
+                    enabled: maninePos2Button.checked
                     checkable: true
                     anchors.verticalCenter: parent.verticalCenter
                     transformOrigin: Item.Center
                     anchors.rightMargin: 320
                     anchors.right: parent.right
+                    onCheckedChanged:  {
+                        checked ? encoder.goToManual(10) : encoder.goToManual(13)
+                        encoder.getPosition(0xAB);
+                    }
                 }
 
                 Button {
@@ -746,12 +784,16 @@ Window {
                     width: 80
                     height: 30
                     text: qsTr("POS 2")
-                    enabled: false
+                    enabled: chiusuraPos1Button.checked
                     checkable: true
                     anchors.left: chiusuraPos1Button.right
                     anchors.leftMargin: 40
                     anchors.verticalCenter: parent.verticalCenter
                     transformOrigin: Item.Center
+                    onCheckedChanged:  {
+                        checked ? encoder.goToManual(12) : encoder.goToManual(15)
+                        encoder.getPosition(0xAB);
+                    }
                 }
 
                 Label {
