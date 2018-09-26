@@ -125,15 +125,15 @@
                                                     //  cleared by reading STATUS
 #define STATUS_DIR                     0x0010 // Indicates current motor direction.
                                                     //  High is FWD, Low is REV.
-#define STATUS_NOTPERF_CMD             0x0080 // Last command not performed.
-#define STATUS_WRONG_CMD               0x0100 // Last command not valid.
+#define STATUS_CMD_ERROR               0x0080 // Last command not performed.
+#define STATUS_STCK_MOD                0x0100 // Last command not valid.
 #define STATUS_UVLO                    0x0200 // Undervoltage lockout is active
-#define STATUS_TH_WRN                  0x0400 // Thermal warning
-#define STATUS_TH_SD                   0x0800 // Thermal shutdown
-#define STATUS_OCD                     0x1000 // Overcurrent detected
-#define STATUS_STEP_LOSS_A             0x2000 // Stall detected on A bridge
-#define STATUS_STEP_LOSS_B             0x4000 // Stall detected on B bridge
-#define STATUS_SCK_MOD                 0x8000 // Step clock mode is active
+#define STATUS_UVLO_ADC                0x0400 // Thermal warning
+#define STATUS_TH_WRN                  0x0800 // Thermal shutdown
+#define STATUS_TH_SD                   0x1000 // Overcurrent detected
+#define STATUS_OCD                     0x2000 // Stall detected on A bridge
+#define STATUS_STALL_B                 0x4000 // Stall detected on B bridge
+#define STATUS_STALL_A                 0x8000 // Step clock mode is active
 
 // Status register motor status field
 #define STATUS_MOT_STATUS                0x0060      // field mask
@@ -192,6 +192,7 @@
 #define SOFT_HIZ             0xA0
 #define HARD_HIZ             0xA8
 #define GET_STATUS           0xD0
+#define GET_STAT_POS       0xF1
 
 #define DITO                0x00
 #define CORPO               0x01
@@ -207,7 +208,7 @@
 #define ARDU_STOP           0xE1
 #define COMMAND             1
 #define MOTOR_NUM           2
-#define NUM_BOARDS          3
+#define NUM_BOARDS          6
 #define PARAM_GET           0x01
 #define PARAM_SET           0x00
 #define PWM_FREQ            0xFA
@@ -216,6 +217,8 @@
 #define CONFIG_LEN          2
 #define POS_LEN             3
 #define MOVE_LEN            4
+
+#define STATUS_ALARM_MASK   0xFE80
 
 
 #endif // POWERSTEPREGISTERS_H

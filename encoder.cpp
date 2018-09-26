@@ -68,7 +68,7 @@ void Encoder::setSerialPort() {
         if(!info.portName().compare("ttyS0")) {
             qDebug() << "Setting serial port";
             serialPort->setPort(info);
-            serialPort->setBaudRate(QSerialPort::Baud57600);
+            serialPort->setBaudRate(QSerialPort::Baud115200);
             serialPort->setDataBits(QSerialPort::Data8);
             serialPort->setParity(QSerialPort::NoParity);
             serialPort->setStopBits(QSerialPort::OneStop);
@@ -101,19 +101,6 @@ void Encoder::decodeData(QByteArray _data)
 {
     int motor = _data[MOTOR_NUM];
 
-    if(answer) {
-        if(dataIn[COMMAND] == dataOut[COMMAND]) {
-            qDebug() << "Command sent and received OK";
-            answer = false;
-            dataOut.clear();
-        }
-        else {
-            qDebug() << "Command sent and received NOT OK";
-            answer = false;
-            dataOut.clear();
-        }
-    }
-
     switch(_data[COMMAND]){
         case GET_STATUS:{
             if(motor == ALL_MOTORS){
@@ -121,12 +108,27 @@ void Encoder::decodeData(QByteArray _data)
                 for(int i = 0; i < NUM_BOARDS; i++) {
                     dataBuffer = static_cast<int>((_data[i*3+4] << 8)) | static_cast<int>(_data[i*3+5]);
                     //qDebug() << "Motor " << _data[i*3+3] << " status: " << dataBuffer;
+                    //decodeStatus(dataBuffer);
                     emit statusUpdated(_data[i*3+3], (dataBuffer == 0x00) ? false : true);
                 }
             } else {
                 dataBuffer = static_cast<int>((_data[MOTOR_NUM + 1] << 8)) | static_cast<int>(_data[MOTOR_NUM + 2]);
                 //qDebug() << "Motor " << motor << " status: " << dataBuffer;
                 emit statusUpdated(motor, (dataBuffer == 0x00) ? false : true);
+            }
+            break;
+        }
+        case GET_STAT_POS:{
+            if(motor == ALL_MOTORS){
+                //qDebug() << "All motor STATUS and POSITION, length: " << _data.size();
+                for(int i = 0; i < NUM_BOARDS; i++) {
+                    dataBuffer = static_cast<int>((_data[i*6+4] << 8)) | static_cast<int>(_data[i*6+5]);
+                    longBuffer = static_cast<long>((_data[i*6+6] << 16)) | static_cast<long>((_data[i*6+7] << 8)) | static_cast<long>((_data[i*6+8]));
+                    //qDebug() << "Motor " << _data[i*3+3] << " status: " << dataBuffer;
+                    //decodeStatus(dataBuffer);
+                    emit statusUpdated(_data[i*6+3], (dataBuffer == 0x00) ? false : true);
+                    emit posUpdated(_data[i*6+3], QString::number(longBuffer));
+                }
             }
             break;
         }
@@ -221,14 +223,64 @@ void Encoder::decodeData(QByteArray _data)
     }
 }
 
+void Encoder::decodeStatus(int _status)
+{
+    int newStatus = _status;
+    if(newStatus & STATUS_CMD_ERROR)
+        qDebug() << "COMMAND ERROR";
+        emit updateTextArea(QString("COMMAND ERROR"));
+    if(!(newStatus & STATUS_UVLO))
+        qDebug() << "UVLO ERROR";
+        emit updateTextArea(QString("UVLO ERROR"));
+    if(newStatus & STATUS_TH_WRN)
+        qDebug() << "THERMAL WARNING ERROR";
+        emit updateTextArea(QString("THERMAL WARNING"));
+    if(newStatus & STATUS_TH_SD)
+        qDebug() << "THERMAL SHUTDOWN ERROR";
+        emit updateTextArea(QString("THERMAL SHUTDOWN"));
+    if(!(newStatus & STATUS_OCD))
+        qDebug() << "OVERCURRENT ERROR";
+        emit updateTextArea(QString("OVERCURRENT"));
+    /*if(!(newStatus & STATUS_UVLO_ADC))
+        qDebug() << "UVLO ADC ERROR";
+        emit updateTextArea(QString("UVLO ADC ERROR"));*/
+    if(!(newStatus & STATUS_STALL_A))
+        qDebug() << "STALL A ERROR";
+        emit updateTextArea(QString("STALL A ERROR"));
+    if(!(newStatus & STATUS_STALL_B))
+        qDebug() << "STALL B ERROR";
+        emit updateTextArea(QString("STALL B ERROR"));
+}
+
 void Encoder::setResetMotor(int _motor)
 {
-
+    //Leggi status motori per azzerare eventuali errori e riportali a Home position
+    stopPosTimer();
     getStatus(_motor);
-    QThread::msleep(100);
-    setSoftStop(_motor);
-    QThread::msleep(100);
-    setHomePos(_motor);
+    QThread::msleep(30);
+    goToCommand(CHIUSURA, 0x00, REV);
+    QThread::msleep(30);
+    goToCommand(MANINE, 0x00, REV);
+    QThread::msleep(5);
+    goToCommand(CORPO, 0x00, REV);
+    QThread::msleep(30);
+    goToCommand(DITO, 0x00, REV);
+    QThread::msleep(30);
+    goToCommand(LUNETTA, 0x00, REV);
+    QThread::msleep(50);
+    setSoftStop(ALL_MOTORS);
+    startPosTimer();
+}
+
+void Encoder::firstRun()
+{
+    //leggi STATUS, blocca i motori e setta la HOME POSITION e fai partire timer per leggere status e posizione correnti
+    getStatus(ALL_MOTORS);
+    QThread::msleep(50);
+    setSoftStop(ALL_MOTORS);
+    QThread::msleep(50);
+    setHomePos(ALL_MOTORS);
+    startPosTimer();
 }
 
 void Encoder::goToManual(int _posId)
@@ -244,6 +296,19 @@ void Encoder::getStatus(int _motor)
     dataOut[0] = RPI_START;
     dataOut[1] = GET_STATUS;
     dataOut[2] = static_cast<char>(_motor);
+    dataOut[3] = RPI_STOP;
+
+    serialPort->write(dataOut);
+    serialPort->waitForBytesWritten(WAIT_DATA_WRITE);
+    serialPort->waitForReadyRead(WAIT_DATA_READ);
+}
+
+void Encoder::getStatPos()
+{
+    dataOut.resize(4);
+    dataOut[0] = RPI_START;
+    dataOut[1] = GET_STAT_POS;
+    dataOut[2] = static_cast<char>(ALL_MOTORS);
     dataOut[3] = RPI_STOP;
 
     serialPort->write(dataOut);
@@ -431,13 +496,14 @@ void Encoder::configFrequency(int _motor, int _param, int _getSet, int _mul, int
 
 void Encoder::startTimer()
 {
-    encTimer->start(1);
+    encTimer->start(2);
     qDebug() << "Starting encoder";
 }
 
 void Encoder::startPosTimer()
 {
-    posTimer->start(300);
+    posTimer->start(100);
+    //qDebug() << "START STAT POS TIMER";
 }
 
 void Encoder::stopTimer()
@@ -453,7 +519,9 @@ void Encoder::stopPosTimer()
 
 void Encoder::posTimerSlot()
 {
-    getPosition(ALL_MOTORS);
+    // FARE FUNZIONE CHE CHIEDE STATUS E POS TUTTO INSIEME, ANCHE IN ARDUINO
+    //qDebug() << "STAT POS TIMER SLOT";
+    getStatPos();
 }
 
 void Encoder::encTimerSlot()
@@ -472,11 +540,13 @@ void Encoder::encTimerSlot()
     for(int i = 0; i < 14; i++){
         if(degrees == e[i])
         {
+            stopPosTimer();
             //qDebug() << "POS ID " << p[i] << "GRADI " << deg << ", MOTORE " << m[i] << ", STEPS " << s[i] << ", DIR " << d[i];
             if(m[i] != 0x05)
                 goToCommand(m[i], s[i], d[i]);
             else if(m[i] == 0x05)
                 moveCommand(m[i], s[i], d[i]);
+            startPosTimer();
         }
     }
 

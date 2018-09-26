@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <phases>
-    <position id="00" motor="0" encoder="5" steps="0"/>
-    <position id="01" motor="1" encoder="13" steps="0"/>
-    <position id="02" motor="2" encoder="13" steps="0"/>
-    <position id="03" motor="4" encoder="90" steps="555"/>
-    <position id="04" motor="0" encoder="110" steps="240"/>
-    <position id="05" motor="4" encoder="197" steps="781"/>
-    <position id="06" motor="1" encoder="240" steps="347"/>
-    <position id="07" motor="2" encoder="240" steps="347"/>
-    <position id="08" motor="5" encoder="250" steps="747"/>
-    <position id="09" motor="4" encoder="270" steps="0"/>
-    <position id="10" motor="3" encoder="287" steps="507"/>
-    <position id="11" motor="2" encoder="315" steps="584"/>
-    <position id="12" motor="3" encoder="330" steps="654"/>
-    <position id="13" motor="3" encoder="340" steps="0"/>
+    <position id="00" motor="0" encoder="5" steps="0" dir="0"/>
+    <position id="01" motor="1" encoder="13" steps="0" dir="0"/>
+    <position id="02" motor="2" encoder="13" steps="0" dir="0"/>
+    <position id="03" motor="4" encoder="90" steps="555" dir="1"/>
+    <position id="04" motor="0" encoder="110" steps="240" dir="1"/>
+    <position id="05" motor="4" encoder="197" steps="781" dir="1"/>
+    <position id="06" motor="1" encoder="240" steps="347" dir="1"/>
+    <position id="07" motor="2" encoder="240" steps="347" dir="1"/>
+    <position id="08" motor="5" encoder="250" steps="747" dir="1"/>
+    <position id="09" motor="4" encoder="270" steps="0" dir="0"/>
+    <position id="10" motor="3" encoder="287" steps="507" dir="1"/>
+    <position id="11" motor="2" encoder="315" steps="584" dir="1"/>
+    <position id="12" motor="3" encoder="330" steps="654" dir="1"/>
+    <position id="13" motor="3" encoder="340" steps="0" dir="0"/>
 </phases>

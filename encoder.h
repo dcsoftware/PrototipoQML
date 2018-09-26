@@ -16,6 +16,7 @@ public:
     Encoder();
     void setSerialPort();
     void decodeData(QByteArray _data);
+    void decodeStatus(int _status);
 
 
 public slots:
@@ -29,6 +30,8 @@ public slots:
     void resetTimer();
     void serialDataReady();
     void setResetMotor(int _motor);
+    void firstRun();
+    void getStatPos();
     void goToManual(int _posId);
     void getStatus(int _motor);
     void setHomePos(int _motor);
@@ -49,6 +52,7 @@ signals:
     void updateEncoder(int degrees);
     void closePopup();
     void readSerialData();
+    void updateTextArea(QString _str);
     void statusUpdated(int _motor, bool _status);
     void configUpdated(int _motor, int _config);
     void posUpdated(int _motor, QString _pos);

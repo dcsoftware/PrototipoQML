@@ -68,25 +68,32 @@ Window {
         id: encoder
 
         onUpdateEncoder: encoderText.text = qsTr("ENCODER: " + degrees)
+        onUpdateTextArea: textArea.append(_str);
         onPosUpdated: {
             switch(_motor){
             case 0x00:
-                ditoPosLabel.text = _pos
+                mainDitoPoslabel.text = _pos
+                manualPane.visible ? ditoPosLabel.text = _pos : null
                 break;
             case 0x01:
-                corpoPosLabel.text = _pos
+                mainCorpoPoslabel.text = _pos
+                manualPane.visible ? corpoPosLabel.text = _pos :null
                 break;
             case 0x02:
-                maninePosLabel.text = _pos
+                mainManPoslabel.text = _pos
+                manualPane.visible ? maninePosLabel.text = _pos : null
                 break;
             case 0x03:
-                chiusuraPosLabel.text = _pos
+                mainChiuPoslabel.text = _pos
+                manualPane.visible ? chiusuraPosLabel.text = _pos : null
                 break;
             case 0x04:
-                lunettaPosLabel.text = _pos
+                mainLunePoslabel.text = _pos
+                manualPane.visible ? lunettaPosLabel.text = _pos : null
                 break;
             case 0x05:
-                nastroPosLabel.text = _pos
+                mainNasPoslabel.text = _pos
+                manualPane.visible ? nastroPosLabel.text = _pos : null
                 break;
             }
         }
@@ -181,10 +188,11 @@ Window {
             z: 1
             anchors.fill: parent
             Component.onCompleted: {
-                console.log("GetStatus Call")
+                console.log("FIRST RUN")
                 //encoder.getStatus(0xAB);
                 //encoder.setHomePos(0xAB)
-                encoder.setResetMotor(0xAB)
+                //encoder.setResetMotor(0xAB)
+                encoder.firstRun()
             }
 
             Button {
@@ -260,7 +268,7 @@ Window {
             RoundButton {
                 id: ditoSButton
                 x: 40
-                y: 320
+                y: 300
                 text: ""
                 enabled: false
                 antialiasing: true
@@ -276,7 +284,7 @@ Window {
             Label {
                 id: label
                 x: 15
-                y: 380
+                y: 350
                 width: 90
                 text: qsTr("DITO")
                 font.pointSize: 13
@@ -286,7 +294,7 @@ Window {
 
             RoundButton {
                 id: lunettaSButton
-                y: 320
+                y: 300
                 text: ""
                 anchors.left: chiusuraSButton.right
                 anchors.leftMargin: 60
@@ -301,7 +309,7 @@ Window {
 
             RoundButton {
                 id: nastroSButton
-                y: 320
+                y: 300
                 text: ""
                 anchors.left: lunettaSButton.right
                 anchors.leftMargin: 60
@@ -316,7 +324,7 @@ Window {
 
             RoundButton {
                 id: corpoSButton
-                y: 320
+                y: 300
                 text: ""
                 anchors.left: ditoSButton.right
                 anchors.leftMargin: 60
@@ -330,7 +338,7 @@ Window {
 
             RoundButton {
                 id: manineSButton
-                y: 320
+                y: 300
                 text: ""
                 anchors.left: corpoSButton.right
                 anchors.leftMargin: 60
@@ -344,7 +352,7 @@ Window {
 
             RoundButton {
                 id: chiusuraSButton
-                y: 320
+                y: 300
                 text: ""
                 anchors.left: manineSButton.right
                 anchors.leftMargin: 60
@@ -359,7 +367,7 @@ Window {
             Label {
                 id: label1
                 x: 415
-                y: 380
+                y: 350
                 width: 90
                 text: qsTr("LUNETTA")
                 verticalAlignment: Text.AlignVCenter
@@ -370,7 +378,7 @@ Window {
             Label {
                 id: label2
                 x: 515
-                y: 380
+                y: 350
                 width: 90
                 text: qsTr("NASTRO")
                 font.pointSize: 13
@@ -381,7 +389,7 @@ Window {
             Label {
                 id: label3
                 x: 115
-                y: 380
+                y: 350
                 width: 90
                 text: qsTr("CORPO")
                 verticalAlignment: Text.AlignVCenter
@@ -392,7 +400,7 @@ Window {
             Label {
                 id: label4
                 x: 215
-                y: 380
+                y: 350
                 width: 90
                 text: qsTr("MANINE")
                 verticalAlignment: Text.AlignVCenter
@@ -403,7 +411,7 @@ Window {
             Label {
                 id: label5
                 x: 315
-                y: 380
+                y: 350
                 width: 90
                 text: qsTr("CHIUSURA")
                 horizontalAlignment: Text.AlignHCenter
@@ -451,6 +459,83 @@ Window {
                 text: qsTr("PARAMETRI")
                 anchors.right: parent.right
                 anchors.rightMargin: 20
+            }
+
+            TextArea{
+                id: textArea
+                x: 20
+                y: 92
+                width: 594
+                height: 161
+                text: qsTr("Text")
+                font.pixelSize: 16
+                ScrollBar.vertical: ScrollBar{}
+            }
+
+            Label {
+                id: mainDitoPoslabel
+                x: 15
+                y: 390
+                width: 90
+                text: qsTr("DITO")
+                font.pointSize: 13
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            Label {
+                id: mainCorpoPoslabel
+                x: 115
+                y: 390
+                width: 90
+                text: qsTr("DITO")
+                font.pointSize: 13
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            Label {
+                id: mainManPoslabel
+                x: 215
+                y: 390
+                width: 90
+                text: qsTr("DITO")
+                font.pointSize: 13
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            Label {
+                id: mainChiuPoslabel
+                x: 315
+                y: 390
+                width: 90
+                text: qsTr("DITO")
+                font.pointSize: 13
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            Label {
+                id: mainLunePoslabel
+                x: 415
+                y: 390
+                width: 90
+                text: qsTr("DITO")
+                font.pointSize: 13
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            Label {
+                id: mainNasPoslabel
+                x: 515
+                y: 390
+                width: 90
+                text: qsTr("DITO")
+                font.pointSize: 13
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
             }
         }
 

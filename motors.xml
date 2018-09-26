@@ -11,9 +11,9 @@
     <position id="08" motor="5" encoder="250" steps="747" dir="1"/>
     <position id="09" motor="4" encoder="270" steps="0" dir="0"/>
     <position id="10" motor="3" encoder="287" steps="507" dir="1"/>
-    <position id="11" motor="2" encoder="315" steps="584" dir="1"/>
-    <position id="12" motor="3" encoder="330" steps="654" dir="1"/>
-    <position id="13" motor="3" encoder="340" steps="0" dir="0"/>
+    <position id="11" motor="2" encoder="305" steps="584" dir="1"/>
+    <position id="12" motor="3" encoder="325" steps="654" dir="1"/>
+    <position id="13" motor="3" encoder="355" steps="0" dir="0"/>
     <position id="14" motor="2" encoder="400" steps="347" dir="0"/>
     <position id="15" motor="3" encoder="400" steps="507" dir="0"/>
     <position id="16" motor="4" encoder="400" steps="555" dir="0"/>
