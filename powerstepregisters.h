@@ -219,6 +219,12 @@
 #define MOVE_LEN            4
 
 #define STATUS_ALARM_MASK   0xFE80
+#define FALG_PIN_00         26
+#define FLAG_PIN_01         19
+#define FLAG_PIN_02         13
+#define FLAG_PIN_03         21
+#define FLAG_PIN_04         20
+#define FLAG_PIN_05         16
 
 
 #endif // POWERSTEPREGISTERS_H

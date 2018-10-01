@@ -10,6 +10,7 @@
 #include <xmlreaderwriter.h>
 #include <debugutils.h>
 #include <wiringPi.h>
+#include <pigpiod_if2.h>
 
 
 #define SLAVE_ADDRESS 0x04
@@ -19,7 +20,7 @@
 static int degrees, attempt;
 static QByteArray dataOut, dataIn;
 static bool answer = false;
-static int dataBuffer;
+static int dataBuffer, _pi;
 static long longBuffer;
 
 static QStringList posId, encoders, motors, steps, dir;
@@ -32,10 +33,11 @@ Encoder::Encoder() : serialPort(new QSerialPort(this))
     encTimer = new QTimer();
     posTimer = new QTimer();
 
-
     connect(encTimer, SIGNAL(timeout()), this, SLOT(encTimerSlot()));
     connect(posTimer, SIGNAL(timeout()), this, SLOT(posTimerSlot()));
     connect(serialPort, SIGNAL(readyRead()), this, SLOT(serialDataReady()));
+
+    setGpio();
 
     setSerialPort();
 
@@ -57,6 +59,61 @@ void Encoder::getPhasesData()
         s[i] = steps.at(i).toLong();
         d[i] = dir.at(i).toInt();
     }
+}
+
+void Encoder::gpioInputCallBack(int pi, uint32_t gpio, uint32_t level, uint32_t tick)
+{
+    qDebug() << "******************INTERRUPT***********************";
+    qDebug() << "GPIO #" << gpio << ", LEVEL " << level << ", TICK " << tick;
+
+}
+
+void Encoder::gpioEncoderCallBack(int pi, uint32_t gpio, uint32_t level, uint32_t tick)
+{
+    /*int MSB = digitalRead(encoderPin1); //MSB = most significant bit
+    int LSB = digitalRead(encoderPin2); //LSB = least significant bit
+
+    int encoded = (MSB << 1) |LSB; //converting the 2 pin value to single number
+    int sum  = (lastEncoded << 2) | encoded; //adding it to the previous encoded value
+
+    if(sum == 0b1101 || sum == 0b0100 || sum == 0b0010 || sum == 0b1011) encoderValue ++;
+    if(sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000) encoderValue --;
+
+    lastEncoded = encoded;*/
+
+
+    qDebug() << "******************ENCODER***********************";
+    qDebug() << "GPIO #" << gpio << ", LEVEL " << level << ", TICK " << tick;
+}
+
+void Encoder::setGpio()
+{
+    _pi = pigpio_start(NULL, NULL);
+    if(_pi >= 0)
+    {
+        for (int i = 0; i < 6; i++) {
+            unsigned pin = gpioFlagInput[i];
+            set_mode(_pi, pin, PI_INPUT);
+            set_pull_up_down(_pi, pin, PI_PUD_DOWN);
+            set_glitch_filter(_pi, pin, 200);
+            callback(_pi, pin, FALLING_EDGE, gpioInputCallBack);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            unsigned pin = gpioEncInput[i];
+            set_mode(_pi, pin, PI_INPUT);
+            set_pull_up_down(_pi, pin, PI_PUD_DOWN);
+            //set_glitch_filter(_pi, pin, 50);
+            callback(_pi, pin, EITHER_EDGE, &gpioEncoderCallBack);
+        }
+        /*set_mode(_pi, 4, PI_INPUT);
+        set_pull_up_down(_pi, 4, PI_PUD_DOWN);
+        set_glitch_filter(_pi, 4, 200);
+        int i = callback(_pi, 4, EITHER_EDGE, gpioCallBack);*/
+    } else {
+        qDebug() << "ERROR INITIALIZING PIGPIO";
+    }
+
 }
 
 void Encoder::setSerialPort() {
@@ -149,15 +206,15 @@ void Encoder::decodeData(QByteArray _data)
         }
         case ABS_POS:{
             if(motor == ALL_MOTORS){
-                qDebug() << "All motor position, length: " << _data.size();
+                //qDebug() << "All motor position, length: " << _data.size();
                 for(int i = 0; i < NUM_BOARDS; i++) {
                     longBuffer = static_cast<long>((_data[i*4+4] << 16)) | static_cast<long>((_data[i*4+5] << 8)) | static_cast<long>((_data[i*4+6]));
-                    qDebug() << "Motor " << _data[i*4+3] << " position: " << longBuffer;
+                    //qDebug() << "Motor " << _data[i*4+3] << " position: " << longBuffer;
                     emit posUpdated(_data[i*4+3], QString::number(longBuffer));
                 }
             } else {
                 longBuffer = static_cast<long>((_data[MOTOR_NUM + 1] << 16)) | static_cast<long>((_data[MOTOR_NUM + 2] << 8)) | static_cast<long>(_data[MOTOR_NUM + 3]);
-                qDebug() << "Motor " << motor << " position: " << longBuffer;
+                //qDebug() << "Motor " << motor << " position: " << longBuffer;
                 emit posUpdated(motor, QString::number(longBuffer));
             }
             break;
@@ -280,7 +337,7 @@ void Encoder::firstRun()
     setSoftStop(ALL_MOTORS);
     QThread::msleep(50);
     setHomePos(ALL_MOTORS);
-    startPosTimer();
+    //startPosTimer();
 }
 
 void Encoder::goToManual(int _posId)
@@ -502,7 +559,7 @@ void Encoder::startTimer()
 
 void Encoder::startPosTimer()
 {
-    posTimer->start(100);
+    posTimer->start(400);
     //qDebug() << "START STAT POS TIMER";
 }
 
@@ -521,7 +578,7 @@ void Encoder::posTimerSlot()
 {
     // FARE FUNZIONE CHE CHIEDE STATUS E POS TUTTO INSIEME, ANCHE IN ARDUINO
     //qDebug() << "STAT POS TIMER SLOT";
-    getStatPos();
+    getPosition(ALL_MOTORS);
 }
 
 void Encoder::encTimerSlot()
@@ -549,22 +606,6 @@ void Encoder::encTimerSlot()
             startPosTimer();
         }
     }
-
-    /*if(encoders.contains(deg)) {
-        int c = encoders.count(deg);
-        if(c > 1) {
-            int i1 = encoders.indexOf(deg);
-            int i2 = encoders.lastIndexOf(deg);
-            moveMotor(motors.at(i2).toInt(), steps.at(i2).toULong(), 0x01);
-            qDebug() << "POS ID " << posId.at(i1) << "GRADI " << deg << ", MOTORE " << motors.at(i1) << ", STEPS " << steps.at(i1);
-            moveMotor(motors.at(i1).toInt(), steps.at(i1).toULong(), 0x01);
-            qDebug() << "POS ID " << posId.at(i2) << "GRADI " << deg << ", MOTORE " << motors.at(i2) << ", STEPS " << steps.at(i2);
-        } else if(c == 1) {
-            int i0 = encoders.indexOf(deg);
-            qDebug() << "POS ID " << posId.at(i0) << "GRADI " << deg << ", MOTORE " << motors.at(i0) << ", STEPS " << steps.at(i0);
-            moveMotor(motors.at(i0).toInt(), steps.at(i0).toULong(), 0x01);
-        }
-    }*/
 }
 
 void Encoder::resetTimer()

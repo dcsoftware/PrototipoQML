@@ -16,4 +16,10 @@ static QStringList stepList = {"FULL STEP", "HALF STEP", "1/4 MICRO", "1/8 MICRO
 static QStringList ocdTHList = {"31,25 mV", "125 mV", "250 mV", "375 mV", "500 mV", "625 mV", "750 mV", "875 mV", "1,00 V"};
 
 static int ocdTH[] = {0x00, 0x03, 0x07, 0x0B, 0x0F, 0x13, 0x17, 0x1B, 0x1f};
+
+static int gpioFlagInput[] = {26, 19, 13, 21, 20, 16};
+
+static int gpioOutput[] = {4};
+
+static int gpioEncInput[] = {6, 12, 13};
 #endif // VALUES_H

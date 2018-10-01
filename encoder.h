@@ -14,7 +14,10 @@ class Encoder : public QObject
 
 public:
     Encoder();
+    void setGpio();
     void setSerialPort();
+    static void gpioInputCallBack(int gpio, uint32_t level, uint32_t tick, uint32_t nonso);
+    static void gpioEncoderCallBack(int gpio, uint32_t level, uint32_t tick, uint32_t nonso);
     void decodeData(QByteArray _data);
     void decodeStatus(int _status);
 

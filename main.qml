@@ -15,54 +15,9 @@ Window {
     width: 800
     height: 480
 
-    /*PigpioCommunication {
-        id:picom
-        onStatusUpdated: {
-            switch(_motor){
-            case 0x00:
-                _status ? ditoSButton.palette.button = "green" : ditoSButton.palette.button = "red"
-                _status ? ditoSButton.enabled = true : ditoSButton.enabled = false;
-                _status ? ditoPos1Button.enabled = true : ditoPos1Button.enabled = false
-                _status ? ditoPos2Button.enabled = true : ditoPos2Button.enabled = false
-                break;
-            case 0x01:
-                _status ? corpoSButton.palette.button = "green" : corpoSButton.palette.button = "red"
-                _status ? corpoSButton.enabled = true : corpoSButton.enabled = false;
-                _status ? corpoPos1Button.enabled = true : corpoPos1Button.enabled = false
-                _status ? corpoPos1Button.enabled = true : corpoPos1Button.enabled = false
-                break;
-            case 0x02:
-                _status ? manineSButton.palette.button = "green" : manineSButton.palette.button = "red"
-                _status ? manineSButton.enabled = true : manineSButton.enabled = false;
-                _status ? maninePos1Button.enabled = true : maninePos1Button.enabled = false
-                _status ? maninePos1Button.enabled = true : maninePos1Button.enabled = false
-                break;
-            case 0x03:
-                _status ? chiusuraSButton.palette.button = "green" : chiusuraSButton.palette.button = "red"
-                _status ? chiusuraSButton.enabled = true : chiusuraSButton.enabled = false;
-                _status ? chiusuraPos1Button.enabled = true : chiusuraPos1Button.enabled = false
-                break;
-            case 0x04:
-                _status ? lunettaSButton.palette.button = "green" : lunettaSButton.palette.button = "red"
-                _status ? lunettaSButton.enabled = true : lunettaSButton.enabled = false;
-                _status ? lunettaPos1Button.enabled = true : lunettaPos1Button.enabled = false
-                break;
-            case 0x05:
-                _status ? nastroSButton.palette.button = "green" : nastroSButton.palette.button = "red"
-                _status ? nastroSButton.enabled = true : nastroSButton.enabled = false;
-                _status ? nastroPos1Button.enabled = true : nastroPos1Button.enabled = false
-                break;
-            }
-            startEncButton.enabled = (ditoSButton.enabled && corpoSButton.enabled && manineSButton.enabled)
-            stopEncButton.enabled = (ditoSButton.enabled && corpoSButton.enabled && manineSButton.enabled)
-
-        }
-    }*/
-
     XmlReaderWriter {
         id: xml
     }
-
 
     Encoder {
         id: encoder

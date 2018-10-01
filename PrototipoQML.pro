@@ -16,12 +16,11 @@ SOURCES += \
         main.cpp \
     i2ccom.cpp \
     encoder.cpp \
-    pigpiocommunication.cpp \
     motors.cpp \
     xmlreaderwriter.cpp
 
 LIBS += -lwiringPi \
-        #-lpigpio \
+        -lpigpio \
         -lpigpiod_if2
 
 RESOURCES += qml.qrc \
@@ -46,7 +45,6 @@ HEADERS += \
     i2ccom.h \
     powerstepregisters.h \
     encoder.h \
-    pigpiocommunication.h \
     motors.h \
     xmlreaderwriter.h \
     values.h \
