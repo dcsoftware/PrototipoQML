@@ -17,7 +17,8 @@ SOURCES += \
     i2ccom.cpp \
     encoder.cpp \
     motors.cpp \
-    xmlreaderwriter.cpp
+    xmlreaderwriter.cpp \
+    gpiomanager.cpp
 
 LIBS += -lwiringPi \
         -lpigpio \
@@ -48,7 +49,7 @@ HEADERS += \
     motors.h \
     xmlreaderwriter.h \
     values.h \
-    gpiopins.h \
-    debugutils.h
+    debugutils.h \
+    gpiomanager.h
 
 DISTFILES +=

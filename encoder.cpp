@@ -2,7 +2,6 @@
 #include <QDebug>
 #include <powerstepregisters.h>
 #include <QThread>
-#include <pigpiocommunication.h>
 #include <motors.h>
 #include <QtSerialPort>
 #include <QSerialPortInfo>

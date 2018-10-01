@@ -3,7 +3,6 @@
 #include <QStringListModel>
 #include <QQmlContext>
 #include <encoder.h>
-#include <pigpiocommunication.h>
 #include <motors.h>
 #include <xmlreaderwriter.h>
 #include <values.h>
@@ -24,8 +23,6 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     qmlRegisterType<Encoder>("Encoder", 1, 0, "Encoder");
-
-    qmlRegisterType<PigpioCommunication>("PigpioCommunication", 1, 0, "PigpioCommunication");
 
     qmlRegisterType<Motors>("Motors", 1, 0, "Motors");
 

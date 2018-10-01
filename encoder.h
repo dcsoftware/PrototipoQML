@@ -3,8 +3,8 @@
 
 #include <QObject>
 #include <QTimer>
-#include <pigpiocommunication.h>
 #include <values.h>
+#include <QtSerialPort>
 
 class Encoder : public QObject
 {
