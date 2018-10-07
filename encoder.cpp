@@ -29,6 +29,7 @@ static long s[17];
 Encoder::Encoder() : serialPort(new QSerialPort(this))
 {
     qDebug() << "Encoder run";
+    wiringPiSetup();
     encTimer = new QTimer();
     posTimer = new QTimer();
 
@@ -67,6 +68,10 @@ void Encoder::gpioInputCallBack(int pi, uint32_t gpio, uint32_t level, uint32_t 
 
 }
 
+void Encoder::wiringPiCB(void)
+{
+}
+
 void Encoder::gpioEncoderCallBack(int pi, uint32_t gpio, uint32_t level, uint32_t tick)
 {
     /*int MSB = digitalRead(encoderPin1); //MSB = most significant bit
@@ -87,7 +92,12 @@ void Encoder::gpioEncoderCallBack(int pi, uint32_t gpio, uint32_t level, uint32_
 
 void Encoder::setGpio()
 {
-    _pi = pigpio_start(NULL, NULL);
+    if(gpioInitialise() < 0){
+        emit updateTextArea(QString("ERRORE INITIALIZE"));
+    }else {
+        emit updateTextArea(QString("INITIALIZE OK"));
+    }
+    /*_pi = pigpio_start(NULL, NULL);
     if(_pi >= 0)
     {
         for (int i = 0; i < 6; i++) {
@@ -105,21 +115,17 @@ void Encoder::setGpio()
             //set_glitch_filter(_pi, pin, 50);
             callback(_pi, pin, EITHER_EDGE, &gpioEncoderCallBack);
         }
-        /*set_mode(_pi, 4, PI_INPUT);
-        set_pull_up_down(_pi, 4, PI_PUD_DOWN);
-        set_glitch_filter(_pi, 4, 200);
-        int i = callback(_pi, 4, EITHER_EDGE, gpioCallBack);*/
     } else {
         qDebug() << "ERROR INITIALIZING PIGPIO";
-    }
-
+    }*/
+    //wiringPiISR(26, INT_EDGE_FALLING, &Encoder::wiringPiCB);
 }
 
 void Encoder::setSerialPort() {
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
-        qDebug() << "Name : " << info.portName();
-        qDebug() << "Description : " << info.description();
-        qDebug() << "Manufacturer: " << info.manufacturer();
+        //qDebug() << "Name : " << info.portName();
+        //qDebug() << "Description : " << info.description();
+        //qDebug() << "Manufacturer: " << info.manufacturer();
 
         if(!info.portName().compare("ttyS0")) {
             qDebug() << "Setting serial port";
@@ -324,8 +330,10 @@ void Encoder::setResetMotor(int _motor)
     QThread::msleep(30);
     goToCommand(LUNETTA, 0x00, REV);
     QThread::msleep(50);
-    setSoftStop(ALL_MOTORS);
-    startPosTimer();
+    //setSoftStop(ALL_MOTORS);
+    //QThread::msleep(50);
+    getPosition(ALL_MOTORS);
+    //startPosTimer();
 }
 
 void Encoder::firstRun()
@@ -409,12 +417,9 @@ void Encoder::getPosition(int _motor)
     dataOut[2] = static_cast<char>(_motor);
     dataOut[3] = RPI_STOP;
 
-    for(int i = 0; i < 3; i++) {
-        QThread::msleep(45);
         serialPort->write(dataOut);
         serialPort->waitForBytesWritten(WAIT_DATA_WRITE);
         serialPort->waitForReadyRead(WAIT_DATA_READ);
-    }
 }
 
 void Encoder::getParam(int _motor, int _param)
@@ -565,6 +570,7 @@ void Encoder::startPosTimer()
 void Encoder::stopTimer()
 {
     encTimer->stop();
+    posTimer->stop();
     qDebug() << "Stopping encoder";
 }
 

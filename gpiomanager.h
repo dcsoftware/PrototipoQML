@@ -13,8 +13,8 @@ class GpioManager
 public:
     GpioManager(int _pi);
     void setEncoderCB(encoderCB_t encCallBack);
-    void cb(uint32_t gpio, uint32_t level);
-    static void cbEx(int pi, uint32_t gpio, uint32_t level, uint32_t tick, void *user);
+    void _encCB(uint32_t gpio, uint32_t level);
+    static void _encCBEx(int pi, uint32_t gpio, uint32_t level, uint32_t tick, void *user);
 };
 
 #endif // GPIOMANAGER_H

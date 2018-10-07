@@ -7,15 +7,15 @@ GpioManager::GpioManager(int _pi)
     myPi = _pi;
 }
 
-void GpioManager::cb(uint32_t gpio, uint32_t level)
+void GpioManager::_encCB(uint32_t gpio, uint32_t level)
 {
     myEncCallBack;
 }
 
-void GpioManager::cbEx(int pi, uint32_t gpio, uint32_t level, uint32_t tick, void *user)
+void GpioManager::_encCBEx(int pi, uint32_t gpio, uint32_t level, uint32_t tick, void *user)
 {
     GpioManager *mySelf = (GpioManager *) user;
-    mySelf->cb(gpio, level);
+    mySelf->_encCB(gpio, level);
 }
 
 void GpioManager::setEncoderCB(encoderCB_t encCallBack)
@@ -32,6 +32,7 @@ void GpioManager::setEncoderCB(encoderCB_t encCallBack)
         set_mode(myPi, myPhaseA, PI_INPUT);
         set_mode(myPi, myPhaseB, PI_INPUT);
         set_pull_up_down(myPi, gpioEncInput[i], PI_PUD_DOWN);
-        callback_ex(myPi, gpioEncInput[i], EITHER_EDGE, cbEx, this);
+        callback_ex(myPi, gpioEncInput[i], EITHER_EDGE, _encCBEx, this);
     }
 }
+

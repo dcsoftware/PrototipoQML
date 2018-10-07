@@ -18,7 +18,8 @@ SOURCES += \
     encoder.cpp \
     motors.cpp \
     xmlreaderwriter.cpp \
-    gpiomanager.cpp
+    gpiomanager.cpp \
+    serialthread.cpp
 
 LIBS += -lwiringPi \
         -lpigpio \
@@ -50,6 +51,7 @@ HEADERS += \
     xmlreaderwriter.h \
     values.h \
     debugutils.h \
-    gpiomanager.h
+    gpiomanager.h \
+    serialthread.h
 
 DISTFILES +=
