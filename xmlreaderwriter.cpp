@@ -3,7 +3,6 @@
 #include <QFile>
 #include <QtDebug>
 #include <QXmlStreamReader>
-#include <motors.h>
 
 static QDomDocument doc;
 static QDomElement root;

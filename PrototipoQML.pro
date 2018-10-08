@@ -14,9 +14,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-    i2ccom.cpp \
     encoder.cpp \
-    motors.cpp \
     xmlreaderwriter.cpp \
     gpiomanager.cpp \
     serialthread.cpp
@@ -44,10 +42,8 @@ target.files = PrototipoQML
 target.path = /home/pi
 
 HEADERS += \
-    i2ccom.h \
     powerstepregisters.h \
     encoder.h \
-    motors.h \
     xmlreaderwriter.h \
     values.h \
     debugutils.h \

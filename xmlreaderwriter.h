@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QFile>
 #include <QDomDocument>
-#include <motors.h>
 
 class XmlReaderWriter : public QObject
 {

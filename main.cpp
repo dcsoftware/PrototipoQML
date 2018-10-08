@@ -3,7 +3,6 @@
 #include <QStringListModel>
 #include <QQmlContext>
 #include <encoder.h>
-#include <motors.h>
 #include <xmlreaderwriter.h>
 #include <values.h>
 
@@ -25,8 +24,6 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     qmlRegisterType<Encoder>("Encoder", 1, 0, "Encoder");
-
-    qmlRegisterType<Motors>("Motors", 1, 0, "Motors");
 
     qmlRegisterType<XmlReaderWriter>("XmlReaderWriter", 1, 0, "XmlReaderWriter");
 
