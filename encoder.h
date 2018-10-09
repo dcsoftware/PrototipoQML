@@ -51,6 +51,9 @@ public slots:
     void configFrequency(int _motor, int _param, int _getSet, int _mul, int _div);
     //void getMotorStatus();
 
+private slots:
+    void getXmlData(const int index, const QStringList pos, const QStringList _enc, const QStringList _mot, const QStringList _steps, const QStringList _dir);
+    void printOut();
 
 signals:
     void updateEncoder(int degrees);

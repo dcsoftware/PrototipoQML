@@ -27,7 +27,6 @@ private:
     void decodeData2(QByteArray _data);
     bool restart;
     bool abort;
-    QSerialPort *serialPort2 = nullptr;
 };
 
 #endif // SERIALTHREAD_H

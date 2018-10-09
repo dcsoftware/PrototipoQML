@@ -9,9 +9,9 @@
 #include <debugutils.h>
 #include <wiringPi.h>
 #include <pigpiod_if2.h>
+#include <xmlreaderthread.h>
+#include <serialthread.h>
 
-
-#define SLAVE_ADDRESS 0x04
 #define WAIT_DATA_READ 30
 #define WAIT_DATA_WRITE 30
 
@@ -32,15 +32,40 @@ Encoder::Encoder() : serialPort(new QSerialPort(this))
     encTimer = new QTimer();
     posTimer = new QTimer();
 
+    XmlReaderThread *xmlReaderThread = new XmlReaderThread(this);
+    connect(xmlReaderThread, &XmlReaderThread::resultReady, this, &Encoder::getXmlData);
+    xmlReaderThread->start();
+
+    SerialThread *serialThread = new SerialThread(this);
+    connect(serialThread, &SerialThread::finished, this, &Encoder::printOut);
+    serialThread->start();
+
     connect(encTimer, SIGNAL(timeout()), this, SLOT(encTimerSlot()));
     connect(posTimer, SIGNAL(timeout()), this, SLOT(posTimerSlot()));
     connect(serialPort, SIGNAL(readyRead()), this, SLOT(serialDataReady()));
 
     setGpio();
 
-    setSerialPort();
+    //setSerialPort();
 
-    getPhasesData();
+    //getPhasesData();
+}
+
+void Encoder::getXmlData(const int index, const QStringList _pos, const QStringList _enc, const QStringList _mot, const QStringList _steps, const QStringList _dir)
+{
+    for(int i = 0; i < index; i++) {
+        p[i] = _pos.at(i).toInt();
+        e[i] = _enc.at(i).toInt();
+        m[i] = _mot.at(i).toInt();
+        s[i] = _steps.at(i).toLong();
+        d[i] = _dir.at(i).toInt();
+    }
+    qDebug() << "XML THREAD OK";
+}
+
+void Encoder::printOut()
+{
+    qDebug() << "SERIAL THREAD FINISHED";
 }
 
 void Encoder::getPhasesData()

@@ -7,35 +7,44 @@ static int dataBuffer;
 static long longBuffer;
 
 
-SerialThread::SerialThread(QObject *parent) : QThread(parent), serialPort2(new QSerialPort(this))
+SerialThread::SerialThread(QObject *parent) : QThread(parent)
 {
     restart = false;
     abort = false;
 
-    connect(serialPort2, SIGNAL(readyRead()), this, SLOT(serialDataReady()));
+
+}
+
+void SerialThread::run()
+{
+    QSerialPort serialPort2;
+
+    connect(&serialPort2, SIGNAL(readyRead()), this, SLOT(serialDataReady2()));
 
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
-        //qDebug() << "Name : " << info.portName();
-        //qDebug() << "Description : " << info.description();
-        //qDebug() << "Manufacturer: " << info.manufacturer();
+        qDebug() << "Name : " << info.portName();
+        qDebug() << "Description : " << info.description();
+        qDebug() << "Manufacturer: " << info.manufacturer();
 
         if(!info.portName().compare("ttyS0")) {
             qDebug() << "Setting serial port";
-            serialPort2->setPort(info);
-            serialPort2->setBaudRate(QSerialPort::Baud115200);
-            serialPort2->setDataBits(QSerialPort::Data8);
-            serialPort2->setParity(QSerialPort::NoParity);
-            serialPort2->setStopBits(QSerialPort::OneStop);
-            serialPort2->setFlowControl(QSerialPort::NoFlowControl);
-            if(serialPort2->open(QIODevice::ReadWrite))
+            serialPort2.setPort(info);
+            serialPort2.setBaudRate(QSerialPort::Baud115200);
+            serialPort2.setDataBits(QSerialPort::Data8);
+            serialPort2.setParity(QSerialPort::NoParity);
+            serialPort2.setStopBits(QSerialPort::OneStop);
+            serialPort2.setFlowControl(QSerialPort::NoFlowControl);
+            if(serialPort2.open(QIODevice::ReadWrite))
                 qDebug() << "Serial port opened";
         }
     }
+
+    exec();
 }
 
 void SerialThread::serialDataReady2()
 {
-    dataIn.append(serialPort2->readAll());
+    //dataIn.append(serialPort2->readAll());
 
     int l = dataIn.size();
 
@@ -183,9 +192,4 @@ SerialThread::~SerialThread()
 {
     abort = true;
     wait();
-}
-
-void SerialThread::run()
-{
-
 }

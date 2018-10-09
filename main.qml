@@ -4,7 +4,7 @@ import QtQuick.VirtualKeyboard 2.3
 import QtQuick.Controls 2.4
 import QtQuick.Controls.Material 2.4
 import Encoder 1.0
-import XmlReaderWriter 1.0
+//import XmlReaderWriter 1.0
 
 
 Window {
@@ -13,9 +13,9 @@ Window {
     width: 800
     height: 480
 
-    XmlReaderWriter {
+    /*XmlReaderWriter {
         id: xml
-    }
+    }*/
 
     Encoder {
         id: encoder
@@ -141,7 +141,7 @@ Window {
                 //encoder.getStatus(0xAB);
                 //encoder.setHomePos(0xAB)
                 //encoder.setResetMotor(0xAB)
-                encoder.firstRun()
+                //encoder.firstRun()
             }
 
             Button {

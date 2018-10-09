@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<Encoder>("Encoder", 1, 0, "Encoder");
 
-    qmlRegisterType<XmlReaderWriter>("XmlReaderWriter", 1, 0, "XmlReaderWriter");
+    //qmlRegisterType<XmlReaderWriter>("XmlReaderWriter", 1, 0, "XmlReaderWriter");
 
     engine.rootContext()->setContextProperty("freqComboModel", &freqComboModel);
     engine.rootContext()->setContextProperty("stepComboModel", &stepComboModel);
