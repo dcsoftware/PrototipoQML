@@ -22,6 +22,7 @@ signals:
 
 protected:
     void run() override;
+    int exec();
 
 private:
     void decodeData2(QByteArray _data);

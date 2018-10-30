@@ -42,6 +42,13 @@ void SerialThread::run()
     exec();
 }
 
+int SerialThread::exec()
+{
+    while(1) {
+
+    }
+}
+
 void SerialThread::serialDataReady2()
 {
     //dataIn.append(serialPort2->readAll());
