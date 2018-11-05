@@ -18,7 +18,9 @@ SOURCES += \
     xmlreaderwriter.cpp \
     gpiomanager.cpp \
     serialthread.cpp \
-    xmlreaderthread.cpp
+    xmlreaderthread.cpp \
+    red.cpp \
+    encthread.cpp
 
 LIBS += -lwiringPi \
         -lpigpio \
@@ -50,6 +52,8 @@ HEADERS += \
     debugutils.h \
     gpiomanager.h \
     serialthread.h \
-    xmlreaderthread.h
+    xmlreaderthread.h \
+    red.h \
+    encthread.h
 
 DISTFILES +=
